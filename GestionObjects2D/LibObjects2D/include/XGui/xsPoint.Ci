@@ -1,0 +1,39 @@
+//--------------------------------------------------------------------------//
+// class XGuiPoint                                                          //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline void XGuiPoint::getLocalBoundingBox(double & xmin,double & ymin,
+                                           double & xmax,double & ymax)
+                                           const // virtual
+{
+xmin=xmax=ymin=ymax=0.0;
+}
+
+inline void XGuiPoint::getBoundingBox(double & xmin,double & ymin,
+                                      double & xmax,double & ymax,
+                                      const XGuiViewer2D *) const
+{                                                                // virtual
+xmin=xmax=_x0;
+ymin=ymax=_y0;
+}
+
+inline double XGuiPoint::distanceTo(double x,double y,
+                                    const XGuiViewer2D *) const // virtual
+{
+x-=_x0;
+y-=_y0;
+return(::sqrt(x*x+y*y));
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiPoint::computePosition(void) // virtual
+{
+  // position is always (_x0;_y0)
+XGuiShape2D::computePosition();
+}
+

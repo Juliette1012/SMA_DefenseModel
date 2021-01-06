@@ -1,0 +1,41 @@
+//--------------------------------------------------------------------------//
+// class XGuiLine                                                           //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline void XGuiLine::getLocalBoundingBox(double & xmin,double & ymin,
+                                          double & xmax,double & ymax)
+                                          const // virtual
+{
+xmin=ymin=ymax=0.0;
+xmax=_length;
+}
+
+inline void XGuiLine::getBoundingBox(double & xmin,double & ymin,
+                                     double & xmax,double & ymax,
+                                     const XGuiViewer2D *) const
+{                                                                // virtual
+if(_x1<_x0) {xmin=_x1; xmax=_x0;}
+else {xmin=_x0; xmax=_x1;}
+if(_y1<_y0) {ymin=_y1; ymax=_y0;}
+else {ymin=_y0; ymax=_y1;}
+}
+
+inline double XGuiLine::distanceTo(double x,double y,
+                                   const XGuiViewer2D *) const // virtual
+{
+return(XGuiShape2D::_distanceToSegment(x,y,_x0,_y0,_x1,_y1));
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiLine::computePosition(void) // virtual
+{
+_x1=_x0+_length*::cos(_theta0);
+_y1=_y0+_length*::sin(_theta0);
+XGuiShape2D::computePosition();
+}
+

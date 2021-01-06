@@ -1,0 +1,164 @@
+//--------------------------------------------------------------------------//
+// class XGuiShape2D                                                        //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline double XGuiShape2D::getX(void) const
+{
+return(_x0);
+}
+
+inline double XGuiShape2D::getY(void) const
+{
+return(_y0);
+}
+
+inline double XGuiShape2D::getTheta(void) const
+{
+return(_theta0);
+}
+
+inline const Strings & XGuiShape2D::getColor(void) const
+{
+return(_color);
+}
+
+inline bool XGuiShape2D::isScalable(void) const // virtual
+{
+return(true);
+}
+
+inline int XGuiShape2D::getLayer(void) const
+{
+return(_layer);
+}
+
+inline bool XGuiShape2D::hasMoved(void) const
+{
+return(_hasMoved);
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiShape2D::addViewer(XGuiViewer2D *) // virtual
+{
+  // nothing to do
+}
+
+inline void XGuiShape2D::removeViewer(XGuiViewer2D *) // virtual
+{
+  // nothing to do
+}
+
+inline void XGuiShape2D::changedViewerBackground(XGuiViewer2D *) // virtual
+{
+  // nothing to do
+}
+
+inline void XGuiShape2D::computePosition(void) // virtual
+{
+_hasMoved=false;
+}
+
+inline void XGuiShape2D::savePosition(void) // virtual
+{
+  // nothing to do
+}
+
+inline void XGuiShape2D::setKeyCallback(void (*keyCallback)(XGuiShape2D *,
+                                                            const Strings &,
+                                                            void *),
+                                        void * keyData)
+{
+_keyCallback=keyCallback;
+_keyData=keyData;
+}
+
+inline void XGuiShape2D::setMotionCallback(
+                         void (*motionCallback)(XGuiShape2D *,
+                                                double,double,
+                                                void *),
+                         void * motionData)
+{
+_motionCallback=motionCallback;
+_motionData=motionData;
+}
+
+inline void XGuiShape2D::setSelectCallback(
+                         void (*selectCallback)(XGuiShape2D *,
+                                                XGuiViewer2D *,
+                                                bool,
+                                                void *),
+                         void * selectData)
+{
+_selectCallback=selectCallback;
+_selectData=selectData;
+}
+
+inline void XGuiShape2D::notifyKey(const Strings & key)
+{
+if(_keyCallback) (*_keyCallback)(this,key,_keyData);
+}
+
+inline void XGuiShape2D::notifyMotion(double dx,double dy)
+{
+if(_motionCallback) (*_motionCallback)(this,dx,dy,_motionData);
+}
+
+inline void XGuiShape2D::notifySelection(XGuiViewer2D * viewer,bool selected)
+{
+if(_selectCallback) (*_selectCallback)(this,viewer,selected,_selectData);
+}
+
+//-------- Private Methods -------------------------------------------------//
+inline bool XGuiShape2D::_equationLine(double x1,double y1,
+                                       double x2,double y2,
+                                       double & a,double & b,double & c)
+{                                                                    // static
+if(x1==x2)
+  {
+  if(y1==y2) return(false);
+  else
+    {
+    a = 1.0;
+    b = 0.0;
+    c = -x1;
+    }
+  }
+else
+  {
+  if(y1==y2)
+    {
+    a = 0.0;
+    b = 1.0;
+    c = -y1;
+    }
+  else
+    {
+    a = (y1-y2)/(x1-x2);
+    b = -1.0;
+    c = y1-(a*x1);
+    }
+  }
+return(true);
+}
+
+inline bool XGuiShape2D::_intersectLines(double a1,double b1,double c1,
+                                         double a2,double b2,double c2,
+                                         double & x,double & y) // static
+{
+double a2b1 = a2*b1;
+double a1b2 = a1*b2;
+if(a2b1==a1b2) { return(false); }
+else
+  {
+  y = (a1*c2-a2*c1)/(a2b1-a1b2);
+  if(a1) x = -(b1*y+c1)/a1;
+  else   x = -(b2*y+c2)/a2;
+  }
+return(true);
+}
+

@@ -1,0 +1,260 @@
+//--------------------------------------------------------------------------//
+// class XGuiShape3D                                                        //
+//--------------------------------------------------------------------------//
+
+inline XGui3DPoint::XGui3DPoint(void)
+ : x(0.0), y(0.0), z(0.0)
+{}
+
+inline XGui3DPoint::XGui3DPoint(double x0,double y0,double z0)
+ : x(x0), y(y0), z(z0)
+{}
+
+inline XGui3DPoint::XGui3DPoint(const XGui3DPoint & p)
+ : x(p.x), y(p.y), z(p.z)
+{}
+
+inline XGui3DPoint::~XGui3DPoint(void) 
+{}
+
+inline XGui3DPoint & XGui3DPoint::operator=(const XGui3DPoint & p)
+{
+x=p.x; y=p.y; z=p.z;
+return(*this);
+}
+
+inline XGui3DTriangle::XGui3DTriangle(void)
+ : p1(0), p2(0), p3(0),
+   dx1(0.0), dy1(0.0), dz1(0.0),
+   dx2(0.0), dy2(0.0), dz2(0.0),
+   dx3(0.0), dy3(0.0), dz3(0.0)
+{}
+
+inline XGui3DTriangle::XGui3DTriangle(int pt1,int pt2,int pt3)
+ : p1(pt1), p2(pt2), p3(pt3),
+   dx1(0.0), dy1(0.0), dz1(0.0),
+   dx2(0.0), dy2(0.0), dz2(0.0),
+   dx3(0.0), dy3(0.0), dz3(0.0)
+{}
+
+inline XGui3DTriangle::XGui3DTriangle(const XGui3DTriangle & t)
+ : p1(t.p1), p2(t.p2), p3(t.p3),
+   dx1(0.0), dy1(0.0), dz1(0.0),
+   dx2(0.0), dy2(0.0), dz2(0.0),
+   dx3(0.0), dy3(0.0), dz3(0.0)
+{}
+
+inline XGui3DTriangle::~XGui3DTriangle(void)
+{}
+
+inline XGui3DTriangle & XGui3DTriangle::operator=(const XGui3DTriangle & t)
+{
+p1=t.p1; p2=t.p2; p3=t.p3;
+dx1=t.dx1; dy1=t.dy1; dz1=t.dz1;
+dx2=t.dx2; dy2=t.dy2; dz2=t.dz2;
+dx3=t.dx3; dy3=t.dy3; dz3=t.dz3;
+return(*this);
+}
+
+inline XGui3DColor::XGui3DColor(void)
+ : r(1.0), g(1.0), b(1.0), range(1)
+{}
+
+inline XGui3DColor::XGui3DColor(float red,float green,float blue,int colRange)
+ : r(red), g(green), b(blue), range(colRange)
+{}
+
+inline XGui3DColor::XGui3DColor(Strings color,int colRange)
+ : r(1.0), g(1.0), b(1.0), range(colRange)
+{
+unsigned long pixel;
+if(getXGuiManager()->allocNamedColor(color,pixel))
+  {
+  unsigned short red,green,blue;
+  getXGuiManager()->queryColor(pixel,red,green,blue);
+  getXGuiManager()->freeColor(pixel);
+  r=((float)red)/65535.0;
+  g=((float)green)/65535.0;
+  b=((float)blue)/65535.0;
+  }
+}
+
+inline XGui3DColor::XGui3DColor(const XGui3DColor & c)
+ : r(c.r), g(c.g), b(c.b), range(c.range)
+{}
+
+inline XGui3DColor::~XGui3DColor(void)
+{}
+
+inline XGui3DColor & XGui3DColor::operator=(const XGui3DColor & c)
+{
+r=c.r; g=c.g; b=c.b;
+range=c.range;
+return(*this);
+}
+
+inline XGui3DTexture::XGui3DTexture(void)
+ : name(), face(-1),
+   x1(0.0), y1(0.0), x2(0.0), y2(0.0), x3(0.0), y3(0.0)
+{}
+ 
+inline XGui3DTexture::XGui3DTexture(Strings fileName,int faceNumber,
+                                    float px1,float py1,
+                                    float px2,float py2,
+                                    float px3,float py3)
+ : name(fileName), face(faceNumber),
+   x1(px1), y1(py1), x2(px2), y2(py2), x3(px3), y3(py3)
+{}
+ 
+inline XGui3DTexture::XGui3DTexture(const XGui3DTexture & t)
+ : name(t.name), face(t.face),
+   x1(t.x1), y1(t.y1), x2(t.x2), y2(t.y2), x3(t.x3), y3(t.y3)
+{}
+ 
+inline XGui3DTexture::~XGui3DTexture(void)
+{}
+ 
+inline XGui3DTexture & XGui3DTexture::operator=(const XGui3DTexture & t)
+{
+name=t.name;
+face=t.face;
+x1=t.x1; y1=t.y1;
+x2=t.x2; y2=t.y2;
+x3=t.x3; y3=t.y3;
+return(*this);
+}
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline void XGuiShape3D::getPosition(double & px,double & py,double & pz)
+                                                                    const
+{
+px=_px;
+py=_py;
+pz=_pz;
+}
+
+inline const XGui3DPointVect & XGuiShape3D::getPoints(void) const
+{
+return(_points);
+}
+
+inline const XGui3DTriangleVect & XGuiShape3D::getFaces(void) const
+{
+return(_faces);
+}
+
+inline const XGui3DColorVect & XGuiShape3D::getColors(void) const
+{
+return(_colors);
+}
+
+inline const XGui3DTextureVect & XGuiShape3D::getTextures(void) const
+{
+return(_textures);
+}
+
+inline bool XGuiShape3D::getLocalBoundingBox(
+            double & xmin,double & ymin,double & zmin,
+            double & xmax,double & ymax,double & zmax) const
+{
+if(_faces.size())
+  {
+  xmin=_xmin;
+  xmax=_xmax;
+  ymin=_ymin;
+  ymax=_ymax;
+  zmin=_zmin;
+  zmax=_zmax;
+  zmin=_zmin;
+  zmax=_zmax;
+  return(true);
+  }
+else return(false);
+}
+
+inline bool XGuiShape3D::getGlobalBoundingBox(
+            double & xmin,double & ymin,double & zmin,
+            double & xmax,double & ymax,double & zmax) const
+{
+if(_faces.size())
+  {
+  double x=_points.back().x;
+  double y=_points.back().y;
+  double z=_points.back().z;
+  localToGlobalPosition(x,y,z);
+  xmin=xmax=x;
+  ymin=ymax=y;
+  zmin=zmax=z;
+  for(int i=_points.size()-1;i--;)
+    {
+    x=_points[i].x;
+    y=_points[i].y;
+    z=_points[i].z;
+    localToGlobalPosition(x,y,z);
+    if(x<xmin) xmin=x;
+    else if(x>xmax) xmax=x;
+    if(y<ymin) ymin=y;
+    else if(y>ymax) ymax=y;
+    if(z<zmin) zmin=z;
+    else if(z>zmax) zmax=z;
+    }
+  return(true);
+  }
+else return(false);
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiShape3D::draw(void)
+{
+glCallList(_geomList);
+}
+
+inline void XGuiShape3D::setKeyCallback(void (*keyCallback)(XGuiShape3D *,
+                                                            const Strings &,
+                                                            void *),
+                                        void * keyData)
+{
+_keyCallback=keyCallback;
+_keyData=keyData;
+}
+
+inline void XGuiShape3D::setMotionCallback(
+                         void (*motionCallback)(XGuiShape3D *,
+                                                double,double,double,
+                                                void *),
+                         void * motionData)
+{
+_motionCallback=motionCallback;
+_motionData=motionData;
+}
+
+inline void XGuiShape3D::setSelectCallback(
+                         void (*selectCallback)(XGuiShape3D *,
+                                                XGuiViewer3D *,
+                                                bool,
+                                                void *),
+                         void * selectData)
+{
+_selectCallback=selectCallback;
+_selectData=selectData;
+}
+
+inline void XGuiShape3D::notifyKey(const Strings & key)
+{
+if(_keyCallback) (*_keyCallback)(this,key,_keyData);
+}
+
+inline void XGuiShape3D::notifyMotion(double dx,double dy,double dz)
+{
+if(_motionCallback) (*_motionCallback)(this,dx,dy,dz,_motionData);
+}
+
+inline void XGuiShape3D::notifySelection(XGuiViewer3D * viewer,bool selected)
+{
+if(_selectCallback) (*_selectCallback)(this,viewer,selected,_selectData);
+}
+

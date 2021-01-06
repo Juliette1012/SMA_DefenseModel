@@ -1,0 +1,78 @@
+//--------------------------------------------------------------------------//
+// class XGuiElement                                                        //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline int XGuiElement::getX(void) const // virtual
+{
+return(_x);
+}
+
+inline int XGuiElement::getY(void) const // virtual
+{
+return(_y);
+}
+
+inline int XGuiElement::getWidth(void) const // virtual
+{
+return(_width);
+}
+
+inline int XGuiElement::getHeight(void) const // virtual
+{
+return(_height);
+}
+
+inline const Strings & XGuiElement::getTitle(void) const
+{
+return(_title);
+}
+
+inline const XGuiElement * XGuiElement::getParent(void) const
+{
+return(_parent);
+}
+
+inline Window XGuiElement::getWindow(void) const
+{
+return(_window);
+}
+
+inline bool XGuiElement::isVisible(void) const
+{
+return(_window ? true : false);
+}
+
+inline bool XGuiElement::isMapped(void) const
+{
+return(_mapped);
+}
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiElement::setParent(XGuiElement * parent)
+{
+_parent=parent;
+}
+
+inline XGuiElement * XGuiElement::accessParent(void)
+{
+return(_parent);
+}
+
+inline void XGuiElement::setCallback(void (*callback)(XGuiElement *,void *),
+                                     void * data)
+{
+_callback=callback;
+_data=data;
+}
+
+inline void XGuiElement::setDestroyCallback(void (*callback)(XGuiElement *,
+                                                             void *),
+                                            void * data)
+{
+_destroyCallback=callback;
+_destroyData=data;
+}
+

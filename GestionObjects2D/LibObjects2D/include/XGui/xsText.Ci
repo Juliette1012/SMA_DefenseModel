@@ -1,0 +1,60 @@
+//--------------------------------------------------------------------------//
+// class XGuiText                                                          //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline bool XGuiText::isScalable(void) const // virtual
+{
+return(false);
+}
+
+inline const Strings & XGuiText::getText(void) const 
+{
+return(_text);
+}
+
+inline void XGuiText::getLocalBoundingBox(double & xmin,double & ymin,
+                                          double & xmax,double & ymax)
+                                          const // virtual
+{
+xmin=ymin=xmax=ymax=0.0; // as a point
+}
+
+inline void XGuiText::getBoundingBox(double & xmin,double & ymin,
+                                     double & xmax,double & ymax,
+                                     const XGuiViewer2D * viewer) const
+{                                                                // virtual
+xmin=_x0;
+ymin=_y0-getXGuiManager()->getCharHeight()/viewer->getScale();
+xmax=_x0+_textWidth/viewer->getScale();
+ymax=_y0;
+}
+
+inline double XGuiText::distanceTo(double x,double y,
+                                   const XGuiViewer2D * viewer) const
+                                                                // virtual
+{
+double xmin,ymin,xmax,ymax;
+getBoundingBox(xmin,ymin,xmax,ymax,viewer);
+double d2,minD2;
+minD2=XGuiShape2D::_distanceToSegment(x,y,xmin,ymin,xmin,ymax);
+d2=XGuiShape2D::_distanceToSegment(x,y,xmin,ymax,xmax,ymax);
+if(d2<minD2) minD2=d2;
+d2=XGuiShape2D::_distanceToSegment(x,y,xmax,ymax,xmax,ymin);
+if(d2<minD2) minD2=d2;
+d2=XGuiShape2D::_distanceToSegment(x,y,xmax,ymin,xmin,ymin);
+if(d2<minD2) minD2=d2;
+return(minD2);
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiText::computePosition(void) // virtual
+{
+  // position is always (_x0;_y0)
+XGuiShape2D::computePosition();
+}
+

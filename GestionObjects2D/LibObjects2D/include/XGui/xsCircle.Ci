@@ -1,0 +1,42 @@
+//--------------------------------------------------------------------------//
+// class XGuiCircle                                                         //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline void XGuiCircle::getLocalBoundingBox(double & xmin,double & ymin,
+                                            double & xmax,double & ymax)
+                                            const // virtual
+{
+xmin=ymin=-_radius;
+xmax=ymax=_radius;
+}
+
+inline void XGuiCircle::getBoundingBox(double & xmin,double & ymin,
+                                       double & xmax,double & ymax,
+                                       const XGuiViewer2D *) const
+{                                                                // virtual
+xmin=_x0-_radius;
+xmax=_x0+_radius;
+ymin=_y0-_radius;
+ymax=_y0+_radius;
+}
+
+inline double XGuiCircle::distanceTo(double x,double y,
+                                     const XGuiViewer2D *) const // virtual
+{
+x-=_x0;
+y-=_y0;
+return(::fabs(::sqrt(x*x+y*y)-_radius));
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiCircle::computePosition(void) // virtual
+{
+  // position is always (_x0;_y0)
+XGuiShape2D::computePosition();
+}
+

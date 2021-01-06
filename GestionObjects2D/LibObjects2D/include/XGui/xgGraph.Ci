@@ -1,0 +1,80 @@
+//--------------------------------------------------------------------------//
+// class XGuiGrapher                                                        //
+//--------------------------------------------------------------------------//
+
+//-------- Static methods --------------------------------------------------//
+inline void XGuiGrapher::forceRedraw(void) // static
+{
+XGuiGrapher::_mustDraw=true;
+}
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline XGuiElement::Type XGuiGrapher::getElemType(void) const // virtual
+{
+return(XGuiElement::GRAPHER);
+}
+
+inline bool XGuiGrapher::isA(XGuiElement::Type type) const // virtual
+{
+return(type==XGuiElement::GRAPHER);
+}
+
+inline double XGuiGrapher::getXScale(void) const
+{
+return(_xScale);
+}
+
+inline double XGuiGrapher::getYScale(void) const
+{
+return(_yScale);
+}
+
+inline double XGuiGrapher::getXmin(void) const
+{
+return(_xmin);
+}
+
+inline double XGuiGrapher::getYmin(void) const
+{
+return(_ymin);
+}
+
+inline double XGuiGrapher::getXmax(void) const
+{
+return(_xmax);
+}
+
+inline double XGuiGrapher::getYmax(void) const
+{
+return(_ymax);
+}
+
+inline int XGuiGrapher::getColumn(double x) const
+{
+return(_drawX+(int)((x-_xmin)*_xScale));
+}
+
+inline int XGuiGrapher::getLine(double y) const
+{
+return(_drawY+_drawHeight-(int)((y-_ymin)*_yScale));
+}
+
+inline const Strings & XGuiGrapher::getBackground(void) const
+{
+return(_color);
+}
+
+inline unsigned long XGuiGrapher::getBackgroundPixel(void) const
+{
+return(_pixel);
+}
+
+inline Pixmap XGuiGrapher::getPixmap(void) const
+{
+return(_pixmap);
+}
+
+//-------- Modifiers -------------------------------------------------------//
+

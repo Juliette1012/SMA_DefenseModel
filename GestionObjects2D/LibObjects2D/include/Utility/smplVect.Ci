@@ -1,0 +1,238 @@
+//--------------------------------------------------------------------------//
+// class SimpleVector                                                       //
+//--------------------------------------------------------------------------//
+
+//#include <malloc.h> Pas pour Apple...
+#include <stdlib.h>
+
+//-------- Allocators ------------------------------------------------------//
+template <class T>
+inline SimpleVector<T>::SimpleVector(size_t size)
+ : 
+   _capacity(size>0 ? size : 1), _size(size),
+   _memory((T *)malloc(_capacity*sizeof(T)))
+{
+memset(_memory,0,_size*sizeof(T));
+}
+
+template <class T>
+inline SimpleVector<T>::SimpleVector(T data,size_t size)
+ : 
+   _capacity(size), _size(size),
+   _memory((T *)malloc(_capacity*sizeof(T)))
+{
+memset(_memory,data,_size*sizeof(T));
+}
+
+template <class T>
+inline SimpleVector<T>::SimpleVector(const SimpleVector<T> & v)
+ : 
+   _capacity(v._capacity), _size(v._size),
+   _memory((T *)malloc(_capacity*sizeof(T)))
+{
+memcpy(_memory,v._memory,_size*sizeof(T));
+}
+
+template <class T>
+inline SimpleVector<T>::SimpleVector(const T * v,size_t size)
+ : 
+   _capacity(size), _size(size),
+   _memory((T *)malloc(_capacity*sizeof(T)))
+{
+memcpy(_memory,v,_size*sizeof(T));
+}
+
+template <class T>
+inline SimpleVector<T>::~SimpleVector(void)
+{
+ free(_memory);
+}
+
+//-------- Inspectors ------------------------------------------------------//
+template <class T>
+inline size_t SimpleVector<T>::getSize(void) const
+{
+return(_size);
+}
+
+template <class T>
+inline size_t SimpleVector<T>::getCapacity(void) const
+{
+return(_capacity);
+}
+
+template <class T>
+inline T SimpleVector<T>::operator[](size_t pos) const
+{
+return(_memory[pos]);
+}
+
+template <class T>
+inline T SimpleVector<T>::getBack(void) const
+{
+return(_memory[_size-1]);
+}
+
+template <class T>
+inline T SimpleVector<T>::getFront(void) const
+{
+return(*_memory);
+}
+
+//-------- Modifiers -------------------------------------------------------//
+template <class T>
+inline void SimpleVector<T>::raz(void)
+{
+_size=0;
+}
+
+template <class T>
+inline void SimpleVector<T>::swap(SimpleVector<T> & other)
+{
+size_t tmp=_size; _size=other._size;         other._size=tmp;
+tmp=_capacity;    _capacity=other._capacity; other._capacity=tmp;
+T * ptr=_memory;  _memory=other._memory;     other._memory=ptr;
+}
+
+template <class T>
+inline void SimpleVector<T>::resize(size_t capacity)
+{
+ size_t sizeT = (size_t)(sizeof(T));
+ size_t newSize = (size_t)(capacity*sizeT);
+_memory=(T *)realloc(_memory,newSize);
+_capacity=capacity;
+}
+
+template <class T>
+inline void SimpleVector<T>::resizeIfNeeded(size_t capacity)
+{
+if(capacity>_capacity) resize(capacity);
+}
+
+template <class T>
+inline T & SimpleVector<T>::operator[](size_t pos)
+{
+return(_memory[pos]);
+}
+
+template <class T>
+inline T & SimpleVector<T>::accessBack(void)
+{
+return(_memory[_size-1]);
+}
+
+template <class T>
+inline T & SimpleVector<T>::accessFront(void)
+{
+return(*_memory);
+}
+
+template <class T>
+inline void SimpleVector<T>::insert(size_t pos,T data)
+{
+if(_size==_capacity) resize(_capacity<<1);
+memmove(_memory+pos+1,_memory+pos,(_size-pos)*sizeof(T));
+_memory[pos]=data;
+++_size;
+}
+
+template <class T>
+inline void SimpleVector<T>::pushBack(T data)
+{
+if(_size==_capacity) resize(_capacity<<1);
+_memory[_size++]=data;
+}
+
+template <class T>
+inline void SimpleVector<T>::pushFront(T data)
+{
+insert(0,data);
+}
+
+template <class T>
+inline void SimpleVector<T>::erase(size_t pos)
+{
+--_size;
+memmove(_memory+pos,_memory+pos+1,(_size-pos)*sizeof(T));
+}
+
+template <class T>
+inline T SimpleVector<T>::readErase(size_t pos)
+{
+T result=_memory[pos];
+erase(pos);
+return(result);
+}
+
+template <class T>
+inline void SimpleVector<T>::popBack(void)
+{
+--_size;
+}
+
+template <class T>
+inline T SimpleVector<T>::readPopBack(void)
+{
+return(_memory[--_size]);
+}
+
+template <class T>
+inline void SimpleVector<T>::popFront(void)
+{
+erase(0);
+}
+
+template <class T>
+inline T SimpleVector<T>::readPopFront(void)
+{
+return(readErase(0));
+}
+
+template <class T>
+inline SimpleVector<T> &
+SimpleVector<T>::operator=(const SimpleVector<T> & v)
+{
+if(&v!=this)
+  {
+  resizeIfNeeded(v._size);
+  _size=v._size;
+  memcpy(_memory,v._memory,_size*sizeof(T));
+  }
+return(*this);
+}
+
+template <class T>
+inline SimpleVector<T> &
+SimpleVector<T>::operator+=(const SimpleVector<T> & v)
+{
+size_t newSize=_size+v._size;
+resizeIfNeeded(newSize);
+memmove(_memory+_size,v._memory,v._size*sizeof(T));
+_size=newSize;
+return(*this);
+}
+
+template <class T>
+inline SimpleVector<T> &
+SimpleVector<T>::affect(const T * v,size_t size)
+{
+if(v!=_memory)
+  {
+  resizeIfNeeded(size);
+  _size=size;
+  memcpy(_memory,v,_size*sizeof(T));
+  }
+return(*this);
+}
+
+template <class T>
+inline SimpleVector<T> &
+SimpleVector<T>::add(const T * v,size_t size)
+{
+size_t newSize=_size+size;
+resizeIfNeeded(newSize);
+memmove(_memory+_size,v,size*sizeof(T));
+_size=newSize;
+return(*this);
+}
+

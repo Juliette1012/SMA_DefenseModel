@@ -1,0 +1,10 @@
+void Rond::_changeColor(void)
+{
+ int nbColors = 12;
+ setColor(_colors[randomMinMax(0,nbColors-1)]);
+
+ MessageColor m(getColor());
+
+ broadcastMessage(m);
+}
+

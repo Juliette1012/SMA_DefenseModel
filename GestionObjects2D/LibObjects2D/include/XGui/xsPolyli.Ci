@@ -1,0 +1,67 @@
+//--------------------------------------------------------------------------//
+// class XGuiPolyline                                                       //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline void XGuiPolyline::getLocalBoundingBox(double & xmin,double & ymin,
+                                              double & xmax,double & ymax)
+                                              const // virtual
+{
+xmin=xmax=_x[_nb-1];
+ymin=ymax=_y[_nb-1];
+for(int i=_nb-1;i--;)
+  {
+  if(_x[i]<xmin) xmin=_x[i];
+  else if(_x[i]>xmax) xmax=_x[i];
+  if(_y[i]<ymin) ymin=_y[i];
+  else if(_y[i]>ymax) ymax=_y[i];
+  }
+}
+
+inline void XGuiPolyline::getBoundingBox(double & xmin,double & ymin,
+                                         double & xmax,double & ymax,
+                                         const XGuiViewer2D *) const
+{                                                                // virtual
+xmin=xmax=_coordX[_nb-1];
+ymin=ymax=_coordY[_nb-1];
+for(int i=_nb-1;i--;)
+  {
+  if(_coordX[i]<xmin) xmin=_coordX[i];
+  else if(_coordX[i]>xmax) xmax=_coordX[i];
+  if(_coordY[i]<ymin) ymin=_coordY[i];
+  else if(_coordY[i]>ymax) ymax=_coordY[i];
+  }
+}
+
+inline double XGuiPolyline::distanceTo(double x,double y,
+                                       const XGuiViewer2D *) const // virtual
+{
+double d2,minD2;
+minD2=XGuiShape2D::_distanceToSegment(x,y,_coordX[_nb-2],_coordY[_nb-2],
+                                          _coordX[_nb-1],_coordY[_nb-1]);
+for(int i=_nb-2;i--;)
+  {
+  d2=XGuiShape2D::_distanceToSegment(x,y,_coordX[i],_coordY[i],
+                                         _coordX[i+1],_coordY[i+1]);
+  if(d2<minD2) minD2=d2;
+  }
+return(minD2);
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiPolyline::computePosition(void) // virtual
+{
+double cosTh=::cos(_theta0);
+double sinTh=::sin(_theta0);
+for(int i=_nb;i--;)
+  {
+  _coordX[i]=_x0+_x[i]*cosTh-_y[i]*sinTh;
+  _coordY[i]=_y0+_y[i]*cosTh+_x[i]*sinTh;
+  }
+XGuiShape2D::computePosition();
+}
+

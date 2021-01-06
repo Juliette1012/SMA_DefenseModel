@@ -1,0 +1,30 @@
+//--------------------------------------------------------------------------//
+// class XGuiCurve                                                          //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline const Strings & XGuiCurve::getColor(void) const
+{
+return(_color);
+}
+
+inline int XGuiCurve::getNbPoints(void) const
+{
+return(_x.getSize());
+}
+
+inline void XGuiCurve::getBoundingBox(double & xmin,double & ymin,
+                                      double & xmax,double & ymax) const
+{                                                               // virtual
+xmin=_xmin;
+ymin=_ymin;
+xmax=_xmax;
+ymax=_ymax;
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+

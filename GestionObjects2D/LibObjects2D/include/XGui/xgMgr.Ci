@@ -1,0 +1,159 @@
+//--------------------------------------------------------------------------//
+// class XGuiManager                                                        //
+//--------------------------------------------------------------------------//
+
+inline XGuiManager * getXGuiManager(void) // friend
+{
+return(XGuiManager::_xGuiManager);
+}
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline bool XGuiManager::fail(void) const
+{
+return(_fail);
+}
+
+inline bool XGuiManager::isShowing(void) const
+{
+return(_showing);
+}
+
+inline Display * XGuiManager::getDisplay(void) const
+{
+return(_display);
+}
+
+inline XtAppContext XGuiManager::getContext(void) const
+{
+return(_appContext);
+}
+
+inline int XGuiManager::getScreen(void) const
+{
+return(_screen);
+}
+
+inline int XGuiManager::getDepth(void) const
+{
+return(_depth);
+}
+
+inline Window XGuiManager::getRoot(void) const
+{
+return(_root);
+}
+
+inline XFontStruct * XGuiManager::getFont(void) const
+{
+return(_font);
+}
+
+inline int XGuiManager::getCharHeight(void) const
+{
+return(_charHeight);
+}
+
+inline int XGuiManager::getScreenWidth(void) const
+{
+return(DisplayWidth(_display,_screen));
+}
+
+inline int XGuiManager::getScreenHeight(void) const
+{
+return(DisplayHeight(_display,_screen));
+}
+
+inline int XGuiManager::getMargin(void) const
+{
+return(4);
+}
+
+inline int XGuiManager::getClickTime(void) const
+{
+return(_clickTime);
+}
+
+inline GC XGuiManager::getGC(void) const
+{
+return(_gc);
+}
+
+inline GC XGuiManager::getXorGC(void) const
+{
+return(_xorGc);
+}
+
+inline unsigned long XGuiManager::getForeground(void) const
+{
+return(_foreground);
+}
+
+inline unsigned long XGuiManager::getBackground(void) const
+{
+return(_background);
+}
+
+inline unsigned long XGuiManager::getHighlight(void) const
+{
+return(_highlight);
+}
+
+inline unsigned long XGuiManager::getLightside(void) const
+{
+return(_lightside);
+}
+
+inline unsigned long XGuiManager::getDarkside(void) const
+{
+return(_darkside);
+}
+
+inline const Strings & XGuiManager::getSelectedText(void) const
+{
+return(_selectedText);
+}
+
+inline bool XGuiManager::isExclusive(void) const
+{
+return(_exclusive.getSize() ? true : false);
+}
+
+inline void XGuiManager::getTask(void (* & task)(void *),void * & data) const
+{
+task=_task;
+data=_taskData;
+}
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiManager::setDefaultCursor(Window win)
+{
+XUndefineCursor(_display,win);
+}
+
+inline void XGuiManager::setMoveCursor(Window win)
+{
+XDefineCursor(_display,win,_cursorMove);
+}
+
+inline void XGuiManager::setZoomCursor(Window win)
+{
+XDefineCursor(_display,win,_cursorZoom);
+}
+
+inline void XGuiManager::setZoomXYCursor(Window win)
+{
+XDefineCursor(_display,win,_cursorZoomXY);
+}
+
+inline void XGuiManager::setRollCursor(Window win)
+{
+XDefineCursor(_display,win,_cursorRoll);
+}
+
+inline void XGuiManager::chooseColor(unsigned long pixel)
+{
+XSetForeground(_display,_gc,pixel);
+}
+

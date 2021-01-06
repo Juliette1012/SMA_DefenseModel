@@ -1,0 +1,84 @@
+V1 : L'environnement, le "square" est un Agent2D de base.
+     On a interdit le deplacement a la souris de l'environnement
+     via la fonction graphic_mouseDragCallback presente dans ex.cpp
+     +
+     La destruction d'un Rond (touche d) est prise en charge
+     via une surdefinition de la methode onKeyPress (classe Rond)
+
+V2 : L'environnement, est maintenant d'une classe specifique
+     ou l'on a interdit le deplacement a la souris via une
+     surdefinition de onMouseDrag (classe Environnement)
+
+V3 : On autorise maintenant le deplacement de l'environnement
+     => attachTo d'un Rond a son environnement
+
+V4 : Un seul rond est autorise. Lorsqu'il rebondit, il change
+     aleatoirement de couleur et envoi en point a point sa
+     couleur a un Agent2D (pas un Object2D) qui modifie alors sa couleur...
+
+V5 : Un seul rond est autorise. Lorsqu'il rebondit, il change
+     aleatoirement de couleur et envoi en broadcast sa couleur
+     a un Agent2D (pas un Object2D) qui modifie alors sa couleur...
+
+---------------------------------------------------------------
+
+Remarque: si on a aussi des Object2D, il faut les ajouter dans le Decor
+et, dans ex.cpp, au niveau de la fonction graphic_selectCallback,
+il faudrait avoir:
+
+if (isInDecor((Object2D*)agt2d))
+{// Interaction avec les Object2D du decor
+ Object2D* obj2d=(Object2D*)agt2d;
+ obj2d->onSelection();
+ return;
+}
+
+Et donc,
+ ===>
+
+void
+graphic_selectCallback(Agent2D * agt2d,
+                       void * userData)
+{
+AppliData * data=(AppliData *)userData;
+(void)agt2d;(void)data;
+ 
+ if (agt2d==NULL) return; // No sens !
+
+if (isInDecor((Object2D*)agt2d))
+{// Interaction avec les Object2D du decor
+ Object2D* obj2d=(Object2D*)agt2d;
+ obj2d->onSelection();
+ return;
+}
+ 
+ agt2d->onSelection();
+}
+
+Idem pour graphic_keyPressCallback ...!
+
+---------------------------------------------------------------
+
+Comment passer d'une version avecKinematic a une
+version sansKinematique (et inversement) ?
+
+avecKinematique                    | sansKinematic
+                                   |
+ex.cpp:                            | ex.cpp:
+------                             | ------
+data->sched->setRealTimeMode(true);| data->sched->setRealTimeMode(false)
+                                   |
+Rond.cpp:                          | Rond.cpp:
+--------                           | --------
+                                   |
+Dans le constructeur               | Dans le constructeur
+Rond::Rond(double radius,...       | Rond::Rond(double radius,...
+mettre setLinearVelocityX(100);    | ne pas mettre setLinearVelocityX
+                                   |
+void Rond::avancer(double dt)      | void Rond::avancer(double dt)
+{                                  | {
+ (void)dt;                         |  (void)dt;
+                                   |
+ Kinematic(dt);                    |  translate(1,0);
+ mettreDedans();                   |  mettreDedans();
+}                                  | }

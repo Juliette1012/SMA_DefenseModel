@@ -1,0 +1,96 @@
+//--------------------------------------------------------------------------//
+// class XGuiViewer2D                                                       //
+//--------------------------------------------------------------------------//
+
+//-------- Static methods --------------------------------------------------//
+inline void XGuiViewer2D::forceRedraw(void) // static
+{
+XGuiViewer2D::_mustDraw=true;
+}
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline XGuiElement::Type XGuiViewer2D::getElemType(void) const // virtual
+{
+return(XGuiElement::VIEWER2D);
+}
+
+inline bool XGuiViewer2D::isA(XGuiElement::Type type) const // virtual
+{
+return(type==XGuiElement::VIEWER2D);
+}
+
+inline Pixmap XGuiViewer2D::getPixmap(void) const
+{
+return(_pixmap);
+}
+
+inline double XGuiViewer2D::getScale(void) const
+{
+return(_scale);
+}
+
+inline double XGuiViewer2D::getXmin(void) const
+{
+return(_xmin);
+}
+
+inline double XGuiViewer2D::getYmin(void) const
+{
+return(_ymin);
+}
+
+inline double XGuiViewer2D::getXmax(void) const
+{
+return(_xmax);
+}
+
+inline double XGuiViewer2D::getYmax(void) const
+{
+return(_ymax);
+}
+
+inline void XGuiViewer2D::getViewPoint(double & x,double & y,
+                                       double & scale) const
+{
+x=0.5*(_xmin+_xmax);
+y=0.5*(_ymin+_ymax);
+scale=_scale;
+}
+
+inline int XGuiViewer2D::getColumn(double x) const
+{
+return((int)((x-_xmin)*_scale));
+}
+
+inline int XGuiViewer2D::getLine(double y) const
+{
+return(_height-(int)((y-_ymin)*_scale));
+}
+
+inline const Strings & XGuiViewer2D::getBackground(void) const
+{
+return(_color);
+}
+
+inline unsigned long XGuiViewer2D::getBackgroundPixel(void) const
+{
+return(_pixel);
+}
+
+inline const XGuiShapeList & XGuiViewer2D::getSelection(void) const
+{
+return(_select);
+}
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiViewer2D::setKeyCallback(void (*keyCallback)(XGuiViewer2D*,
+                                                             const Strings &,
+                                                             void *),
+                                         void * keyData)
+{
+_keyCallback=keyCallback;
+_keyData=keyData;
+}
+

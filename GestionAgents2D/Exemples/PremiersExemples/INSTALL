@@ -1,0 +1,43 @@
+#!/bin/sh
+
+if test $# -ne 0
+then if test $1 = "-h" -o  $1 = "-help" -o $1 = "--h" -o $1 = "--help"
+     then echo "$0 [-no] [-h|-help]"
+          exit
+     fi
+fi
+
+clean=""
+
+if test $# -ne 0
+then if test $1 = "-no"
+     then clean=clean
+     fi
+fi
+
+for i in 1 2 3 4 5
+do
+echo "-----------------------------------------"
+cd PremiersExemplesV$i
+
+echo "PremiersExemplesV$i :"
+echo "V$i avecKinematic:"
+echo "------------------"
+cd avecKinematic
+if test -f INSTALL
+then ./INSTALL $*
+else make $clean
+fi
+cd ..
+echo "V$i sansKinematic:"
+echo "------------------"
+cd sansKinematic
+if test -f INSTALL
+then ./INSTALL $*
+else make $clean
+fi
+cd ..
+
+cd ..
+echo "-----------------------------------------"
+done

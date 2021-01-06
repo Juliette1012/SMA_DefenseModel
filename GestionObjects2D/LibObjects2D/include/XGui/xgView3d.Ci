@@ -1,0 +1,64 @@
+//--------------------------------------------------------------------------//
+// class XGuiViewer3D                                                       //
+//--------------------------------------------------------------------------//
+
+//-------- Static methods --------------------------------------------------//
+inline void XGuiViewer3D::forceRedraw(void) // static
+{
+XGuiViewer3D::_mustDraw=true;
+}
+
+//-------- Allocators ------------------------------------------------------//
+
+//-------- Inspectors ------------------------------------------------------//
+inline XGuiElement::Type XGuiViewer3D::getElemType(void) const // virtual
+{
+return(XGuiElement::VIEWER3D);
+}
+
+inline bool XGuiViewer3D::isA(XGuiElement::Type type) const // virtual
+{
+return(type==XGuiElement::VIEWER3D);
+}
+
+inline const Strings & XGuiViewer3D::getBackground(void) const
+{
+return(_color);
+}
+
+inline unsigned long XGuiViewer3D::getBackgroundPixel(void) const
+{
+return(_pixel);
+}
+
+inline void XGuiViewer3D::getPosition(double & px,double & py,double & pz)
+                                                                     const
+{
+px=_px;
+py=_py;
+pz=_pz;
+}
+
+inline void XGuiViewer3D::getLocation(double & px,double & py,
+                                      double & pz,double & roll,
+                                      double & pitch,double & yaw) const
+{
+getPosition(px,py,pz);
+getOrientation(roll,pitch,yaw);
+}
+
+inline const XGuiShape3DList & XGuiViewer3D::getSelection(void) const
+{
+return(_select);
+}
+
+//-------- Modifiers -------------------------------------------------------//
+inline void XGuiViewer3D::setKeyCallback(void (*keyCallback)(XGuiViewer3D*,
+                                                             const Strings &,
+                                                             void *),
+                                         void * keyData)
+{
+_keyCallback=keyCallback;
+_keyData=keyData;
+}
+

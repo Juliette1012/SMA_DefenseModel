@@ -1,0 +1,106 @@
+Par rapport a la version de fabrice,
+j'ai pas mal simplifie...
+
+1) Il n'y a plus d'allocateur memoire !
+
+2) J'ai modifie les 2 makefile
+
+3) De plus, dans xgView2d.cpp (ligne 42), j'ai modifie la methode
+   void XGuiViewer2D::removeShape(XGuiShape2D * shape)
+
+=> inversion des lignes  (*itV)->_select.erase(itS);
+                         (*itS)->notifySelection(*itV,false);
+
+=> (*itS)->notifySelection(*itV,false);
+   (*itV)->_select.erase(itS);
+
+4) XGuiWindow::_computeDelta dans xgWin.cpp (ligne 253), il y a un probleme
+   sur XCheckTypedWindowEvent
+
+#if 0
+while(!XCheckTypedWindowEvent(getXGuiManager()->getDisplay(),
+                              _inWindow,ReparentNotify,&event));
+#else
+// return; // ???
+while(XCheckTypedWindowEvent(getXGuiManager()->getDisplay(),
+                             _inWindow,ReparentNotify,&event));
+#endif
+
+Toujours dans XGuiWindow::_computeDelta, j'ai ajoute (ligne 286):
+=================================================================
+
+#if 1 && defined __CYGWIN__  // Ajout ... a cause d'un probleme pour CYGWIN ???
+  if (XGuiWindow::_dx==0) XGuiWindow::_dx = 5; 
+  if (XGuiWindow::_dy==0) XGuiWindow::_dy = 24;
+//if (XGuiWindow::_dw==0) XGuiWindow::_dw = 10;
+//if (XGuiWindow::_dh==0) XGuiWindow::_dh = 29;
+#endif
+
+  .... A creuser !!
+
+5) Il faut compiler les fichiers avec les options
+d'optimisation: OPTIMIZER=-O3 -fno-exceptions ...
+
+Ca marche avec -O3 et -O2 mais pas avec -O1 ni -O
+Rappel: pas d'optimisation -> -O0
+
+Sinon, dans xsRectan.cpp (ligne 113),
+il y a un pb avec le test de deux doubles !
+=> On peut eventuellement mettre un test avec les macros suivantes:
+#define EPSILON 0.0001
+#define ABS(x) ((x) < 0 ? -(x) : (x))
+#define EQUAL(x,y) (ABS((x)-(y)) < EPSILON ? 1 : 0)
+
+Alors pour quelle raison faut-il utiliser ces options
+d'optimisation?...
+Si on ne le fait pas, les tests "directs" entre double
+if (d1==d2) ne fonctionnent pas a cause du probleme
+d'arrondi !
+
+=> Et un bug apparait (il doit y en avoir d'autres)
+=> C'est clignotement de la dectection d'un capteur,
+c'est a dire qu'un capteur du robot ne peut pas
+pas detecter une collision !
+
+En discutant avec Fabrice, ... c'est un bug !
+
+6) Et j'ai ajoute une classe C++ Object2D et les acces a cette classe en C
+
+7) Et j'ai ajoute la possibilite d'avoir des objets invisibles (noShape)
+
+8) Modification de la gestion de evenements souris
+==> Voir xgView2d.cpp methode: XGuiViewer2D::processEvent
+la version de fabrice est en #if 0, au cas ou!
+
+9) 8) => 9) Dans Object2D.cpp, ajout de :
+
+static
+void
+_selectCB(GuiShape2D *   /* shape  */,
+          XGuiViewer2D * /* viewer */,
+          bool           selected,
+          void         * userData)
+{
+ if(!selected) { return; }
+
+graphic_selectCallback((Object2D *)userData,_userData);
+}
+
+Et maintenant un Object2D doit avoir une methode
+void Object2D::onSelection(void) qui sera appelee en fonction des besoins
+dans graphic_selectCallback
+
+10) Dans Object2D.cpp, modification des 2 appels a XGuiViewer2D::select
+    Voir Object2D::setLayer et Object2D::_changeShape
+    Cela evite d'avoir l'appel a la callBack notifySelection sur une forme
+    d'un objet deja selectionne.... Evite les bouclages eventuels.
+
+11) Dans un Object2D, ajout des methodes:
+virtual void onSelection(void);
+void   getBoundingBox(double & xmin,double & ymin,
+                      double & xmax,double & ymax);
+
+12) Ajout de 2 parametres (optionnels) dans la methode
+void Object2D::void   text(const char * text,
+                           double * textHeight=NULL, double * textWidth=NULL);
+

@@ -1,0 +1,23 @@
+1) Faire un viewFirst afin d'obtenir l'Object2D le plus proche
+dans un cone de perception (cone defini par un angle et une
+distance).
+==> Il faut avoir un set static contenant l'ensemble des
+    Object2D.
+==> Optimiser le calcul de distance (distance Manhattan)
+
+  1 OK !
+
+2) Et la cerise sur le gateau :
+
+==> Faire la meme chose avec un type d'Object2D particulier
+==> Gestion des noms des classes ...
+
+  2 OK ! (voir Agent2D)
+
+3) Donner la possibilite d'avoir un Object2D invisible
+
+   shape = NULL   ... pas simple ???
+
+   ou en tout cas, avoir une forme noShape ...
+
+  3 OK !

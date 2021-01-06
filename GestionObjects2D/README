@@ -1,0 +1,15 @@
+Pour obtenir un executable:
+
+1) Aller dans LibObjects2D/lib
+
+2) Faire make
+ => Utilisation de makefile
+ => Creation d'une librairie statique "libgraphics2D.a"
+
+3) Puis aller dans Exemples
+
+4) Faire make
+ => Utilisation de la librairie statique "libgraphics2D.a"
+    se trouvant dans LibObjects2D/lib
+ => Creation de l'executable "graphTest" (C++) et   "graphTestC" (C)
+ => Execution :             ./graphTest        ou  ./graphTestC

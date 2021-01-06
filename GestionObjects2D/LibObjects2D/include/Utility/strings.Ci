@@ -1,0 +1,281 @@
+//--------------------------------------------------------------------------//
+// class Strings                                                            //
+//--------------------------------------------------------------------------//
+
+//-------- Allocators ------------------------------------------------------//
+inline Strings::Strings(void)
+ : SimpleVector<char>('\0',1)
+{} // _v[0]='\0' is done by _v('\0',1)
+
+inline Strings::Strings(const Strings & str)
+ : SimpleVector<char>(str)
+{}
+
+inline Strings::Strings(char c,size_t n)
+ : SimpleVector<char>(c,n+1)
+{
+_memory[n]='\0';
+}
+
+inline Strings::Strings(const char * str)
+ : SimpleVector<char>(str,::strlen(str)+1)
+{}
+
+inline Strings::Strings(char * str)
+ : SimpleVector<char>(str,::strlen(str)+1)
+{}
+
+inline Strings::Strings(const unsigned char * str)
+ : SimpleVector<char>((const char *)str,::strlen((const char *)str)+1)
+{}
+
+inline Strings::Strings(unsigned char * str)
+ : SimpleVector<char>((char *)str,::strlen((char *)str)+1)
+{}
+
+inline Strings::Strings(void * p)
+ : SimpleVector<char>()
+{
+char buffer[0x10];
+sprintf(buffer,"%p",p);
+operator=(buffer);
+}
+
+inline Strings::Strings(int i)
+ : SimpleVector<char>()
+{
+char buffer[0x10];
+sprintf(buffer,"%d",i);
+operator=(buffer);
+}
+
+inline Strings::Strings(unsigned int i)
+ : SimpleVector<char>()
+{
+char buffer[0x10];
+sprintf(buffer,"%u",i);
+operator=(buffer);
+}
+
+inline Strings::Strings(short s)
+ : SimpleVector<char>()
+{
+char buffer[0x10];
+sprintf(buffer,"%hd",s);
+operator=(buffer);
+}
+
+inline Strings::Strings(unsigned short s)
+ : SimpleVector<char>()
+{
+char buffer[0x10];
+sprintf(buffer,"%hu",s);
+operator=(buffer);
+}
+
+inline Strings::Strings(long l)
+ : SimpleVector<char>()
+{
+char buffer[0x10];
+sprintf(buffer,"%ld",l);
+operator=(buffer);
+}
+
+inline Strings::Strings(unsigned long l)
+ : SimpleVector<char>()
+{
+char buffer[0x10];
+sprintf(buffer,"%lu",l);
+operator=(buffer);
+}
+
+inline Strings::Strings(float f,bool showReal)
+ : SimpleVector<char>()
+{
+char buffer[0x20];
+sprintf(buffer,"%.12g",f);
+if(showReal)
+  {
+  char * ptr;
+  bool found=false;
+  for(ptr=buffer;*ptr;ptr++)
+    {
+    if((*ptr=='.')||(*ptr=='e'))
+      found=true;
+    }
+  if(!found)
+    {
+    *(ptr++)='.';
+    *(ptr++)='0';
+    *ptr='\0';
+    }
+  }
+operator=(buffer);
+}
+
+inline Strings::Strings(double d,bool showReal)
+ : SimpleVector<char>()
+{
+char buffer[0x20];
+sprintf(buffer,"%.12g",d);
+if(showReal)
+  {
+  char * ptr;
+  bool found=false;
+  for(ptr=buffer;*ptr;ptr++)
+    {
+    if((*ptr=='.')||(*ptr=='e'))
+      found=true;
+    }
+  if(!found)
+    {
+    *(ptr++)='.';
+    *(ptr++)='0';
+    *ptr='\0';
+    }
+  }
+operator=(buffer);
+}
+
+inline Strings::~Strings(void)
+{}
+
+inline void * Strings::operator new(size_t size)
+{
+return(malloc(size));
+}
+
+inline void * Strings::operator new(size_t size,void * block)
+{
+ (void)size;
+return(block);
+}
+
+inline void Strings::operator delete(void * block,size_t size)
+{
+ (void)size;
+ free(block);
+}
+
+//-------- Inspectors ------------------------------------------------------//
+inline size_t Strings::len(void) const
+{
+return(getSize()-1);
+}
+
+inline bool Strings::empty(void) const
+{
+return(!len());
+}
+
+inline Strings::operator const char*(void) const
+{
+return(_memory);
+}
+
+inline char Strings::operator[](int n) const
+{
+return(_memory[n]);
+}
+
+//-------- Comparisons -----------------------------------------------------//
+inline bool operator==(const Strings & str1,const Strings & str2)
+{
+return(str1.getSize()==str2.getSize()
+       ? !::strcmp(str1._memory,str2._memory)
+       : false
+      );
+}
+
+inline bool operator!=(const Strings & str1,const Strings & str2)
+{
+return(!::operator==(str1,str2));
+}
+
+inline bool operator<(const Strings & str1,const Strings & str2)
+{
+return(::strcmp(str1._memory,str2._memory)<0);
+}
+
+inline bool operator<=(const Strings & str1,const Strings & str2)
+{
+return(!::operator<(str2,str1));
+}
+
+inline bool operator>=(const Strings & str1,const Strings & str2)
+{
+return(!::operator<(str1,str2));
+}
+
+inline bool operator>(const Strings & str1,const Strings & str2)
+{
+return(::operator<(str2,str1));
+}
+
+//-------- Input/Output ----------------------------------------------------//
+
+//-------- Modifiers -------------------------------------------------------//
+inline void Strings::raz(void)
+{
+_memory[0]='\0';
+_size=1;
+}
+
+inline char & Strings::operator[](int n)
+{
+return(_memory[n]);
+}
+
+inline Strings & Strings::operator=(const char * str)
+{
+affect(str,::strlen(str)+1);
+return(*this);
+}
+
+inline Strings & Strings::operator=(const Strings & str)
+{
+SimpleVector<char>::operator=(str);
+return(*this);
+}
+
+inline Strings & Strings::operator+=(char c)
+{
+accessBack()=c;
+pushBack('\0');
+return(*this);
+}
+
+inline Strings & Strings::operator+=(const Strings & str)
+{
+popBack();
+SimpleVector<char>::operator+=(str);
+if(&str==this) pushBack('\0');
+return(*this);
+}
+
+inline Strings & Strings::operator+=(const char * str)
+{
+popBack();
+add(str,::strlen(str));
+pushBack('\0');
+return(*this);
+}
+
+inline Strings operator+(const Strings & str1,const Strings & str2)
+{
+Strings tmp(str1);
+return(tmp+=str2);
+}
+
+inline Strings operator+(const Strings & str1,const char * str2)
+{
+Strings tmp(str1);
+return(tmp+=str2);
+}
+
+inline Strings operator+(const char * str1,const Strings & str2)
+{
+Strings tmp(str1);
+return(tmp+=str2);
+}
+

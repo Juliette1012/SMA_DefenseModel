@@ -1,0 +1,59 @@
+A savoir sur la classe Scheduler...
+pour programmeurs avertis...
+pour faire des SMA de SMA
+
+En realite, la classe Scheduler comporte en plus de ce qui a ete annonce:
+
+- Un constructeur par recopie et l'operateur d'affectation
+=> la copie d'un ordonnanceur o dans un autre ordonnanceur implique
+   la copie des agents ordonnances par l'ordonnanceur o.
+
+- Des methodes permettant de gerer/modifier l'"ordonnanceur courant".
+Le terme "ordonnanceur courant" doit etre compris ici comme l'ordonnanceur
+auquel est automatiquement rattache un agent lorsque celui-ci est instancie.
+
+Pour avoir acces a ces nouvelles fonctionnalites,
+la ligne numero 4 du fichier
+
+      GestionAgents/LibMoRis/include/Scheduler.h
+
+doit etre de-commentee !... Et la bibliotheque re-compilee.
+
+//#define SMAdeSMA    =====>    #define SMAdeSMA
+
+-------------------- Interface publique classe Scheduler ---------------
+class Scheduler
+{
+ public:
+
+   // Allocateurs/Desallocateurs
+
+                     Scheduler(void);
+                     Scheduler(const Scheduler& aScheduler);
+                     Scheduler& operator=(const Scheduler& aScheduler);
+            virtual ~Scheduler(void);
+
+                void cycle(void);
+
+                void setRandomMode(bool randomMode);
+                bool getRandomMode(void) const;
+
+                void setRealTimeMode(bool realTimeMode);
+                bool getRealTimeMode(void) const;
+
+   // Gestion de plusieurs ordonnanceurs
+   //-- Pour programmeurs avertis ... pour faire des SMA de SMA !
+   //-- Constructeur par recopie et affectation
+   // Implemente:    Scheduler(const Scheduler& aScheduler);
+   // Implemente:    Scheduler& operator=(const Scheduler& aScheduler);
+   //-- Changement et memorisation de l'ordonnanceur courant........
+   static void       setCurrentSched(Scheduler& aScheduler);
+   static void       setCurrentSched(Scheduler* aSchedulerPtr);
+   static Scheduler* getCurrentSched(void);
+};
+------------------------------------------------------------------------
+
+Pour l'utilisation de plusieurs ordonnanceurs,
+voir l'exemple se trouvant ici:
+GestionAgents/Exemples/ExemplesPourProgrammeursAvertis/SMAdeSMA
+
