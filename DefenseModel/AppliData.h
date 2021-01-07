@@ -6,8 +6,8 @@
 typedef struct
 {
 Scheduler* sched;
-vector<Agent2D*>  obj;
-vector<AgentIA*> objIA;
+Agent2D*  obj;
+//vector<AgentIA*> objIA;
 Environnement* env;
 Eprouvette* eprouvette;
 int        autoscale;

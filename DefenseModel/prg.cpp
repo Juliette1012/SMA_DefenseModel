@@ -20,6 +20,7 @@ Eprouvette *eprouvette = NULL; // variable globale
 
 void deleteAppliData(AppliData *data)
 {
+  /*
   for (auto &obj : data->obj)
   {
     delete obj;
@@ -27,7 +28,8 @@ void deleteAppliData(AppliData *data)
   for (auto &objIA : data->objIA)
   {
     delete objIA;
-  }
+  }*/
+  delete (data->obj); 
   delete (data->eprouvette);
   delete (data->env);
   delete (data->sched);
@@ -69,7 +71,7 @@ int main(void)
   data->sched->setRealTimeMode(true);
 
   /*---- initialize the CMA Agent  ----*/
-  data->obj.push_back(new AgentCMA());
+  data->obj = new AgentCMA();
 
   /*---- initialize Networks Segment ----*/
   /*---- initialize LMA Agents ----*/
@@ -82,37 +84,41 @@ int main(void)
   // Network Segment A
   data->env = new Environnement("Network Segment A", 130, 50, 130, 150, "pink");
   new Label(data->env);
-  data->obj.push_back(new AgentLMA(80, 50, data->env));
+  data->obj = new AgentLMA(80, 50, data->env);
 
-  data->objIA.push_back(new AgentIA(130, 100, data->env, data->eprouvette));
-  data->objIA.push_back(new AgentIA(170, 30, data->env, data->eprouvette));
-  data->objIA.push_back(new AgentIA(100, -10, data->env, data->eprouvette));
+  data->obj = new AgentIA(130, 100, data->env, data->eprouvette);
+  data->obj = new AgentIA(170, 30, data->env, data->eprouvette);
+  data->obj = new AgentIA(100, -10, data->env, data->eprouvette);
 
   // Network Segment B
   data->env = new Environnement("Network Segment B", -90, -60, 120, 120, "purple");
   new Label(data->env);
-  data->obj.push_back(new AgentLMA(-50, -50, data->env));
+  data->obj = new AgentLMA(-50, -50, data->env);
 
-  data->objIA.push_back(new AgentIA(-130, -100, data->env, data->eprouvette));
-  data->objIA.push_back(new AgentIA(-50, -100, data->env, data->eprouvette));
-  data->objIA.push_back(new AgentIA(-140, -20, data->env, data->eprouvette));
+  data->obj = new AgentIA(-130, -100, data->env, data->eprouvette);
+  data->obj = new AgentIA(-50, -100, data->env, data->eprouvette);
+  data->obj = new AgentIA(-140, -20, data->env, data->eprouvette);
 
   // Network Segment C
   data->env = new Environnement("Network Segment C", -110, 80, 170, 100, "cyan");
   new Label(data->env);
-  data->obj.push_back(new AgentLMA(-100, 50, data->env));
+  data->obj = new AgentLMA(-100, 50, data->env);
 
-  data->objIA.push_back(new AgentIA(-100, 110, data->env, data->eprouvette));
-  data->objIA.push_back(new AgentIA(-180, 70, data->env, data->eprouvette));
-  data->objIA.push_back(new AgentIA(-40, 80, data->env, data->eprouvette));
+  data->obj = new AgentIA(-100, 110, data->env, data->eprouvette);
+  data->obj = new AgentIA(-180, 70, data->env, data->eprouvette);
+  data->obj = new AgentIA(-40, 80, data->env, data->eprouvette);
 
   /*----- help display ----*/
   help();
 
+  /*---- Get all agentsIA of data->obj in the vector allAgtIA----*/
+  vector<Agent*> allAgtIA;
+  getAllAgents("AgentIA", allAgtIA);
+
   /*----- initialize random Ag in AgentIA ----*/
   // faire un type d'attaque random et nbre d'Ag qui attaque
   // Il(s) attaquent sur un AgentIA random également
-  new Ag("Dos", data->objIA.at(0)); // type, AgentIA
+  new Ag("Dos", (AgentIA*) allAgtIA.at(0)); // type, AgentIA
 
   /*----- initialize specific data -----*/
 
