@@ -1068,7 +1068,7 @@ void
 graphic_init(const char * windowName,
              const char * fontName)
 {
-setenv("ORISFONT",fontName);
+setenv("ORISFONT",fontName, 1);
 GuiManager * manager=getGuiManager();
 if(!manager) manager=new GuiManager();
 if(manager->fail())
