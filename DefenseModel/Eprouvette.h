@@ -49,7 +49,8 @@ class Eprouvette : public Object2D
 
            int  getSize(void) const;
            void setHostAgtIA(AgentIA* agtIA);
-           void lastHostNoShape();
+           //void lastHostNoShape();
+           void deleteLastHost();
 
  protected :
 

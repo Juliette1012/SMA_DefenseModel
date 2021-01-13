@@ -23,6 +23,7 @@ AgentIA::AgentIA(void) : Agent2D()
 AgentIA::AgentIA(int x, int y, Environnement *env, Eprouvette *eprouvette) : Agent2D()
 {
     newAgent();
+
     _eprouvette = eprouvette;
     _squareSize = 10.0; // Taille du AgentIA
     _env = env;
@@ -33,10 +34,10 @@ AgentIA::AgentIA(int x, int y, Environnement *env, Eprouvette *eprouvette) : Age
 
     setPosition(x, y);
 
-    _nbAcImmatures = 10;
-    for (int i =0; i < _nbAcImmatures; i++){
-        _AcImmatures.push_back(new Ac(this));
-    }
+    _nbAcImmature = 10;
+    _nbAcMature = 0;
+    _nbAcMemoire = 0;
+    _nbAg = 0;
 }
 
 //--
@@ -76,7 +77,7 @@ void AgentIA::onKeyPress(const char *key)
     {
         const char *name = getName().c_str();
         getEprouvette()->vizualisation(name, getEnv(), this);
-        cout << "Vizualisation of the AgentIA : " << getName() << endl;
+
     }
     else
         Agent2D::onKeyPress(key);
@@ -108,38 +109,66 @@ void AgentIA::setPosition(int x, int y)
     setLocation(_x, _y, 0);
 }
 
-vector<Ag *> AgentIA::getAg(void)
-{
-    return _Ag;
-}
-
-vector<Ac *> AgentIA::getAcImmatures(void)
-{
-    return _AcImmatures;
-}
-
-void AgentIA::clearAgAc()
-{
-    for (auto &ac : _AcImmatures)
-        delete ac;
-    for (auto &ag : _Ag)
-        delete ag;
-}
-
 void AgentIA::setAg(Ag *ag)
 {
     if (ag != NULL){
         _Ag.push_back(ag);
-        cout << "\nAdd an Ag to " << getName() << endl;
+        cout << "\nAdd an Ag: "<< ag << " to " << getName() << endl;
     } 
 }
 
 void AgentIA::setAc(Ac *ac)
 {
     if (ac != NULL){
-        _AcImmatures.push_back(ac);
-        cout << "\nAdd an Ac to " << getName() << endl;
+        _Ac.push_back(ac);
+        //cout << "\nAdd an Ac: " << ac << " to " << getName() << endl;
     }
+}
+
+
+vector<Ag *> AgentIA::getAg(void)
+{
+    return _Ag;
+}
+
+vector<Ac *> AgentIA::getAc(void)
+{
+    return _Ac;
+}
+
+int AgentIA::getNbAcImmature(void){
+    return _nbAcImmature;
+}
+
+int AgentIA::getNbAcMature(void){
+    return _nbAcMature;
+}
+
+int AgentIA::getNbAcMemoire(void){
+    return _nbAcMemoire;
+}
+
+int AgentIA::getNbAg(void){
+    return _nbAg;
+}
+
+void AgentIA::setNbAg(int nbAg){
+    cout << "Set with the number : " << nbAg << endl;
+    _nbAg = nbAg;
+    cout << "setNbAg of " << this->getName() << " : " << _nbAg << "\n\n";
+}
+
+void AgentIA::setNbAcImmature(int nbAcImmature){
+    _nbAcImmature = nbAcImmature;
+}
+
+void AgentIA::setNbAcMature(int nbAcMature){
+    _nbAcMature = nbAcMature;
+    
+}
+
+void AgentIA::setNbAcMemoire(int nbAcMemoire){
+    _nbAcMemoire = nbAcMemoire;
 }
 
 //--

@@ -23,7 +23,7 @@ class Ac : public ImAgent
 
    // Allocateurs/Desallocateurs
 
-            Ac(AgentIA* host);
+            Ac(AgentIA* host, int type);
             Ac(const Ac& anA);
             Ac& operator=(const Ac& anA);
    virtual ~Ac(void);
@@ -37,6 +37,9 @@ class Ac : public ImAgent
 
             void start(void);
             void stop(void);
+
+            int getType(void);
+            void setType(int type);
 
 
    // Comparaisons
@@ -64,6 +67,7 @@ class Ac : public ImAgent
              double _vision;
              class AgentIA* _agentIA;
              Object2D *_cercle;
+             int _type; // 0 : Immature, 1 : Mature, 2 : Memoire
 
  private :
 

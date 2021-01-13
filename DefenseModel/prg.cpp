@@ -86,7 +86,8 @@ int main(void)
   new Label(data->env);
   data->obj = new AgentLMA(80, 50, data->env);
 
-  data->obj = new AgentIA(130, 100, data->env, data->eprouvette);
+  AgentIA* agentIAInfecte = new AgentIA(130, 100, data->env, data->eprouvette);
+  data->obj = agentIAInfecte;
   data->obj = new AgentIA(170, 30, data->env, data->eprouvette);
   data->obj = new AgentIA(100, -10, data->env, data->eprouvette);
 
@@ -118,7 +119,10 @@ int main(void)
   /*----- initialize random Ag in AgentIA ----*/
   // faire un type d'attaque random et nbre d'Ag qui attaque
   // Il(s) attaquent sur un AgentIA random également
-  new Ag("Dos", (AgentIA*) allAgtIA.at(0)); // type, AgentIA
+  //AgentIA* agentIAInfecte = (AgentIA*) allAgtIA.at(0);
+  agentIAInfecte->setNbAg(1); // type, AgentIA
+  cout << "Agent IA infecté nbAg : " << agentIAInfecte->getNbAg() << endl;
+  cout << "Agent IA infecté : " <<agentIAInfecte->getName() << endl;
 
   /*----- initialize specific data -----*/
 
@@ -166,7 +170,6 @@ void graphic_keyPressCallback(Agent2D *agt2d,
 
   if (agt2d == NULL) // Interaction clavier SANS objet selectionne
   {
-    /*
  if(!strcmp(key,"Left"))
   {
   graphic_mouseDragCallback(data->obj,
@@ -176,7 +179,7 @@ void graphic_keyPressCallback(Agent2D *agt2d,
   {
   graphic_mouseDragCallback(data->obj,
                             0.5,0.0,userData); // simulate mouse drag
-  }*/
+  }
     if (!strcmp(key, "h") || !strcmp(key, "H"))
     {
       help();
@@ -221,4 +224,5 @@ void graphic_mouseDragCallback(Agent2D *agt2d,
   (void)data;
 
   agt2d->onMouseDrag(dx, dy); // Par defaut : deplacement de l'Agent2D a la souris
+  //eprouvette->onMouseDrag(dx, dy);
 }

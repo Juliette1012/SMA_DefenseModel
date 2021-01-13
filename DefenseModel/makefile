@@ -42,7 +42,7 @@ FILESprg=prg.cpp \
 
 #---- les variables ----
 
-CC=g++ -g -Wall -Wextra -std=c++11 -stdlib=libc++
+CC=g++ -g -Wall -Wextra -std=c++11
 
 INCFLAGS_STD=-I${INCAGENTS2D} -I${INCAGENTS} -I${INCOBJECTS2D}
 INCFLAGS_APPLE=-I/usr/X11/include
@@ -55,7 +55,7 @@ LIBX11=$(LIBX11_STD)
 LIBX11=$(LIBX11_APPLE)
 LIBFLAGS=-lm $(LIBX11) -lX11 -lXt
 
-WOFF=-W -Wall -Werror # Avant APPLE, -pedantic en plus.!
+WOFF=-W -Wall # Avant APPLE, -pedantic en plus.!
 CCOPTS=-DX_GUI
 OPTIMIZER=-O3 -fno-exceptions
 

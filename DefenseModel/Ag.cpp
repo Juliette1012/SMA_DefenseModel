@@ -13,7 +13,6 @@ Ag::Ag(string type, AgentIA* host) : ImAgent()
     newAgent();
     _type = type;
     _host = host;
-    host->setAg(this);
 }
 
 //--
@@ -62,41 +61,43 @@ void Ag::event_H(void)
 
 void Ag::displayAg()
 { 
+    cout << "Display Ag";
     extern Eprouvette* eprouvette;
     this->setColor("red");  
     square(0.7,1);
     attachTo(*eprouvette);
 }
 
+
 //--
-/*
 void Ag::live(double dt)
 {
- (void)dt; // Pour eviter un warning si pas utilise
+    (void)dt; // Pour eviter un warning si pas utilise
 
- // "Comportement" d'un Agent de la classe Ag
+    // "Comportement" d'un Agent de la classe Ag
 
- size_t alea = randomMinMax(1,10000);
+    size_t alea = randomMinMax(1,300);
+    if (alea == 1) { 
+                    Ag * agt = new Ag(*this);
 
- if (alea == 1) { 
-                 Ag * agt = new Ag(*this);
+                    double oldTheta = agt->getTheta();
+                    size_t maxAlea = 8;
+                    alea = randomMinMax(1,maxAlea);
+                    agt->setTheta((alea-1)*2*M_PI/maxAlea);
+                    //_host->setNbAg(_host->getNbAg() + 1);
+                    Ag *firstAg;
+                    do
+                    {
+                    firstAg = (Ag*)agt->viewFirst("Ag",2*M_PI,_squareSize);
+                    if (firstAg) {
+                        agt->translate(_squareSize,0);
+                    }
+                    } while (firstAg);
+                    
+                    agt->setTheta(oldTheta);
+    }
+}
 
-                 double oldTheta = agt->getTheta();
-
-                 size_t maxAlea = 8;
-                 alea = randomMinMax(1,maxAlea);
-                 agt->setTheta((alea-1)*2*M_PI/maxAlea);
-                 
-                 Ag *firstAg;
-                 do
-                 {
-                  firstAg = (Ag*)agt->viewFirst("Ag",2*M_PI,_squareSize);
-                  if (firstAg) agt->translate(_squareSize,0);
-                 } while (firstAg);
-                 
-                 agt->setTheta(oldTheta);
- }
-}*/
 
 //--
 bool operator==(const Ag& anA1, const Ag& anA2)

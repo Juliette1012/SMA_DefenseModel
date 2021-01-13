@@ -2,38 +2,20 @@
 
 #include "Decor.h"
 
-Ac::Ac(AgentIA* host) : ImAgent()
+Ac::Ac(AgentIA* host, int type) : ImAgent()
 {
     newAgent();
     _agentIA = host;
     _cercle = new Object2D();
-
-    /*
-    if (display){
-        setColor("green");
-        double x,y,t; getLocation(x,y,t);
-
-        _vision = 3.0 * _squareSize;
-
-        _cercle = new Object2D();
-        addDecor(_cercle);
-
-        _cercle->setLocation(x,y,t);
-        _cercle->circle(_vision,0);
-        _cercle->setColor(this->getColor());
-
-        _cercle->attachTo(*this);
-        attachTo(*_cercle);
-
-        stop();    
-    }*/
+    _type = type;
+    extern Eprouvette* eprouvette;
 }
 
 //--
 Ac::Ac(const Ac& anA) : ImAgent(anA)
 {
- newAgent();
- _copy(anA);
+    newAgent();
+    _copy(anA);
 }
 
 //--
@@ -44,6 +26,7 @@ Ac& Ac::operator=(const Ac& anA)
   ImAgent::operator=(anA);
   _destroy();
   _copy(anA);
+   
  }
  return *this;
 }
@@ -60,8 +43,6 @@ void Ac::deleteDecor(){
 
 void Ac::displayAc()
 {
-    extern Eprouvette* eprouvette;
-    this->setColor("green");
     square(0.7,1);
 
     double x,y,t; getLocation(x,y,t);
@@ -71,12 +52,29 @@ void Ac::displayAc()
 
     _cercle->setLocation(x,y,t);
     _cercle->circle(_vision,0);
-    _cercle->setColor(this->getColor());
+    
 
     _cercle->attachTo(*this);
     attachTo(*_cercle);
 
-    stop();    
+    if (_type == 0){
+        // Immature
+        this->setColor("green");
+        _cercle->setColor(this->getColor());
+    }
+    else if (_type == 1){
+        //Mature
+        this->setColor("yellow");
+        _cercle->setColor(this->getColor());
+    }
+    else if (_type == 2){
+        //Memoire
+        this->setColor("orange");
+        _cercle->setColor(this->getColor());
+    }
+
+    stop();
+    //start();    
 }
 
 
@@ -129,13 +127,25 @@ void Ac::live(double dt)
  firstAg = (Ag*)viewFirst("Ag",2*M_PI,0); 
  if (firstAg)
  {
-  double xAg = firstAg->getX();
-  double yAg = firstAg->getY();
-  if (towards(xAg,yAg) <= _vision)
-  {
-   delete firstAg;
-   setLinearVelocityX(0);
-  }
+    //Si un agent Ag est detecte alors on devient mature et on attaque
+    for (Ac* ac : _agentIA->getAc()){
+        ac->setColor("yellow");
+        _cercle->setColor(this->getColor());
+        this->setType(1); // mature
+    }
+    double xAg = firstAg->getX();
+    double yAg = firstAg->getY();
+    if (towards(xAg,yAg) <= _vision)
+    {
+        //L'agent devient mémoire en détruisant un Ag
+        this->setColor("orange");
+        _cercle->setColor(this->getColor());
+        this->setType(2); // memoire
+        //delete firstAg;
+        setLinearVelocityX(0);
+        //update the agent state
+    }
+    //cout << _agentIA->getNbAcMature() << endl;
  }
  else setLinearVelocityX(0);
 
@@ -153,6 +163,12 @@ void Ac::stop(void)
  setLinearVelocityX(0);
 }
 
+int Ac::getType(){
+    return _type;
+}
+void Ac::setType(int type){
+    _type = type;
+}
 
 //--
 bool operator==(const Ac& anA1, const Ac& anA2)

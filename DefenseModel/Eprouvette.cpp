@@ -58,30 +58,93 @@ void Eprouvette::onKeyPress(const char * key)
 void Eprouvette::setHostAgtIA(AgentIA* agtIA)
 {
     _hostAgtIA = agtIA;
-}
-
-void Eprouvette::lastHostNoShape(){
-    if (_hostAgtIA != NULL and _hostAgtIA->getAg().size() != 0){
-        for (auto& ag : _hostAgtIA->getAg()) ag->noShape();
-    }
-    if (_hostAgtIA != NULL and _hostAgtIA->getAcImmatures().size() != 0){
-        for (auto& ac : _hostAgtIA->getAcImmatures()) {
-            ac->noShape();
-            ac->deleteDecor();
-        }
-    }
+    cout << "host changed : " << agtIA->getName() << endl;
 }
 
 void Eprouvette::vizualisation(const char* name, Environnement *env, AgentIA* agtIA)
 {
     _l->setText(name, env);
 
-    this->lastHostNoShape();
+    //if (_hostAgtIA != NULL and _hostAgtIA->getAc().size() != 0){
+    if (_hostAgtIA != NULL){
+        //Avant de changer d'éprouvette, il faut sauvegarder l'état courant de l'agentIA
+        //remise à 0 des compteurs
+        int nbAcImmature = 0;
+        int nbAcMature = 0;
+        int nbAcMemoire = 0;
+        int nbAg = 0;
+
+        for (auto& ac : _hostAgtIA->getAc()){
+            switch (ac->getType()){
+                case 0:
+                    nbAcImmature++;
+                    break;
+                case 1:
+                    nbAcMature++;
+                    break;
+                case 2:
+                    nbAcMemoire++;
+                    break;
+                default:
+                    cout << "Error Ac " << ac << " of wrong type " << ac->getType() << endl;
+                    break;
+            }
+        }
+        nbAg = _hostAgtIA->getAg().size();
+        
+        _hostAgtIA->setNbAcImmature(nbAcImmature);
+        _hostAgtIA->setNbAcMature(nbAcMature);
+        _hostAgtIA->setNbAcMemoire(nbAcMemoire);
+        cout << "nb Ag : " << nbAg << endl;
+        _hostAgtIA->setNbAg(nbAg);
+
+        cout << "\nLast host : " << endl;
+        cout << "nbAcImmature : " << nbAcImmature << endl;
+        cout << "nbAcMature : " << nbAcMature << endl;
+        cout << "nbAcMemoire : " << nbAcMemoire << endl;
+        cout << "nbAg : " << nbAg << endl;
+    }
+
+    vector<Agent*> allAc;
+    vector<Agent*> allAg;
+    getAllAgents("Ac", allAc);
+    getAllAgents("Ag", allAg);
+    for (auto& ac : allAc) delete ac;
+    for (auto& ag : allAg) delete ag;
 
     this->setHostAgtIA(agtIA);
+    // regarder le nombre d'ag depuis AgentIA
+    // Créer le nombre correspondant d'ag
 
-    for (auto& ag : _hostAgtIA->getAg()) ag->displayAg();
-    for (auto& ac : _hostAgtIA->getAcImmatures()) ac->displayAc();
+    if ((int)_hostAgtIA->getNbAcImmature() !=0) {
+        for (int i=0; i < _hostAgtIA->getNbAcImmature(); i++){
+            _hostAgtIA->setAc(new Ac(_hostAgtIA, 0));}
+    }
+    if ((int)_hostAgtIA->getNbAcMature() !=0) {
+        for (int i=0; i < _hostAgtIA->getNbAcMature(); i++){
+            _hostAgtIA->setAc(new Ac(_hostAgtIA, 1));}
+    }
+    if ((int)_hostAgtIA->getNbAcMemoire() !=0) {
+        for (int i=0; i < _hostAgtIA->getNbAcMemoire(); i++){
+            _hostAgtIA->setAc(new Ac(_hostAgtIA, 2));}
+    }
+    if ((int)_hostAgtIA->getNbAg() !=0) {
+        for (int i=0; i < _hostAgtIA->getNbAg(); i++){
+            _hostAgtIA->setAg(new Ag(_hostAgtIA));}
+    }
+    cout << "size of _hostAgtIA->getAcImmature().size() : " << _hostAgtIA->getAc().size() << endl;
+    cout << "size of _hostAgtIA->getNbAcImmature() : " << _hostAgtIA->getNbAcImmature() << endl;
+    cout << "size of _hostAgtIA->getAg().size() : " << _hostAgtIA->getAg().size() << endl;
+    cout << "size of _hostAgtIA->getNbAg() : " << _hostAgtIA->getNbAg() << endl;
+
+    for (auto& ag : _hostAgtIA->getAg()) {
+        cout << "Try to display";
+        ag->displayAg();
+    }
+    for (auto& ac : _hostAgtIA->getAc()) ac->displayAc();
+
+    cout << "Nombre Ag : " << _hostAgtIA->getAg().size() << endl;
+    cout << "Nombre Ac : " << _hostAgtIA->getAc().size() << endl;
 }
 
 void Eprouvette::event_H(void)

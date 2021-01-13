@@ -37,14 +37,21 @@ class AgentIA : public Agent2D
    Eprouvette* getEprouvette(void);
 
    vector<Ag*> getAg(void);
-   vector<Ac*> getAcImmatures(void);
+   vector<Ac*> getAc(void);
+
+   int getNbAcImmature(void);
+   int getNbAcMature(void);
+   int getNbAcMemoire(void);
+   int getNbAg(void);
+   void setNbAg(int nbAg);
+   void setNbAcImmature(int nbAcImmature);
+   void setNbAcMature(int nbAcMature);
+   void setNbAcMemoire(int nbAcMemoire);
 
    void setPosition(int x, int y);
 
    void setAg(Ag* ag);
    void setAc(Ac* ac);
-
-   void clearAgAc();
 
    // Comparaisons
 
@@ -67,12 +74,14 @@ class AgentIA : public Agent2D
             class Eprouvette* _eprouvette;
             const char* _name;
 
-            int _nbAcImmatures;
-            //int _AcMatures;
-            //int _AcMemoires;
+            int _nbAcImmature;
+            int _nbAcMature;
+            int _nbAcMemoire;
+            int _nbAg = 5;
             
             vector<Ag*> _Ag; 
-            vector<Ac*> _AcImmatures;
+            vector<Ac*> _Ac;
+
  private :
 
 

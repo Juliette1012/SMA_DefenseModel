@@ -32,7 +32,7 @@ class Ag : public ImAgent
 
             void event_H(void);
 
-   //virtual  void live(double dt);
+   virtual  void live(double dt);
             void displayAg();
 
 
