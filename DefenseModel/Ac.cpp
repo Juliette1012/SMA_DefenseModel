@@ -139,9 +139,11 @@ void Ac::live(double dt)
  firstAg = (Ag*)viewFirst("Ag",2*M_PI,0); 
  if (firstAg)
  {
-    this->setColor("yellow");
-    _cercle->setColor(this->getColor());
-    this->setType(1); // mature
+     if (this->getType() != 2){
+        this->setColor("yellow");
+        _cercle->setColor(this->getColor());
+        this->setType(1); // mature
+     }
 
     double xAg = firstAg->getX();
     double yAg = firstAg->getY();

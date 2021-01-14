@@ -1,5 +1,6 @@
 #include "AgentLMA.h"
-
+#include "MessageAgentIA.h"
+#include "MessageAgentLMA.h"
 #include <math.h>
 
 //--
@@ -16,7 +17,7 @@ AgentLMA::AgentLMA(void) : Agent2D()
  int posY = randomMinMax(0, 100);
 
  setPosition(posX, posY);
-
+ setSensitivity("MessageAgentIA",true);
 }
 
 AgentLMA::AgentLMA(int x, int y, Environnement* env) : Agent2D()
@@ -31,7 +32,7 @@ AgentLMA::AgentLMA(int x, int y, Environnement* env) : Agent2D()
  setColor("blue");
 
  setPosition(x, y);
-
+ setSensitivity("MessageAgentIA",true);
 }
 
 //--
@@ -72,9 +73,62 @@ void AgentLMA::onKeyPress(const char * key)
 //--
 void AgentLMA::live(double dt)
 {
- (void)dt; // Pour eviter un warning si pas utilise
+    string agentName = getName();
+    string className = getClass();
+    string prefixe   = "["+agentName+"]";
+    (void)dt; // Pour eviter un warning si pas utilise
 
- // "Comportement" d'un Agent de la classe AgentLMA
+    // Recois de messages de AgentIA contenant le nombre d'Ag en son sein
+    while (getNbMessages()){
+        MessageAgentIA* message = (MessageAgentIA*)getNextMessage();
+        Agent* emitter = message->getEmitter();
+        string emitterName = emitter->getName();
+
+        // cout << prefixe << " I receive a message from : " << emitterName
+        //         << " with value : " << message->getInt() << endl;
+
+        
+        if ((int)_riskStatusAgentsIA.size() < 3){
+            _riskStatusAgentsIA.push_back(message->getInt());
+            _nameAgentsIA.push_back(emitterName);
+        }
+
+        else {
+            if (_nameAgentsIA.at(0) == emitterName and (message->getInt() != _riskStatusAgentsIA.at(0))){
+                _riskStatusAgentsIA.at(0) = message->getInt();
+                cout << _riskStatusAgentsIA.at(0) << endl;
+            }
+            if (_nameAgentsIA.at(1) == emitterName and (message->getInt() != _riskStatusAgentsIA.at(1))){
+                _riskStatusAgentsIA.at(1) = message->getInt();
+            }
+
+            if (_nameAgentsIA.at(2) == emitterName and (message->getInt() != _riskStatusAgentsIA.at(2))){
+                    _riskStatusAgentsIA.at(2) = message->getInt();
+            }
+        }
+
+        int compteur = 0;
+        for (auto& risk : _riskStatusAgentsIA){
+            compteur += risk;
+        }
+        //_riskStatusGlobalLMA = compteur;
+        // Envoi un message au CMA contenant la menace
+        //MessageAgentLMA m(_riskStatusGlobalLMA);
+        if ((int)_riskStatusAgentsIA.size() == 3 ){
+            _riskStatusGlobalLMA = compteur;
+            MessageAgentLMA m(_riskStatusGlobalLMA);
+            vector<Agent*> AgentCMA;
+            getAllAgents("AgentCMA", AgentCMA);
+
+            Agent* newAgentCMA = AgentCMA.at(0);
+
+            sendMessageTo(m,newAgentCMA);
+        }
+        
+        delete message;
+    }
+
+
 }
 
 Environnement* AgentLMA::getEnv(void)

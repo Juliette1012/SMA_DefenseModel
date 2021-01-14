@@ -7,6 +7,9 @@
 
 #include "Agent2D.h"
 #include "Environnement.h"
+#include "AgentCMA.h"
+
+class AgentCMA;
 
 using namespace std;
 
@@ -51,6 +54,11 @@ class AgentLMA : public Agent2D
             int _x;
             int _y;
             Environnement* _env;
+
+            vector<int> _riskStatusAgentsIA;
+            vector<string> _nameAgentsIA;
+
+            int _riskStatusGlobalLMA = 0;
 
  private :
 

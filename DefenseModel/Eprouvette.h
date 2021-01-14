@@ -35,8 +35,10 @@ class Eprouvette : public Object2D
 
             void event_H(void);
             void event_S(void);
-            //void event_C(void);
-            //void event_G(void);
+            void event_C(void);
+            void event_0(void);
+            void event_1(void);
+            void event_2(void);
 
             void vizualisation(const char* name, Environnement *env, AgentIA* agtIA);
 
@@ -48,13 +50,17 @@ class Eprouvette : public Object2D
 
    // Inspecteurs/modificateurs
 
-           int  getSize(void) const;
-           void setHostAgtIA(AgentIA* agtIA);
-           void deleteLastHost();
+          int  getSize(void) const;
+          void setHostAgtIA(AgentIA* agtIA);
+          void deleteLastHost();
 
-           vector<int> getTypeAcHost(void);
-           void setTypeAcHost(int type);
-           void clearTypeAcHost(void);
+          vector<int> getTypeAcHost(void);
+          void setTypeAcHost(int type);
+          void clearTypeAcHost(void);
+
+          int getTypeAgHost(void);
+          void setTypeAgHost(int type);
+          void clearTypeAgHost(void);
 
           void saveAcImmaturePosHost(double x, double y);
           vector<tuple<double, double>> getAcImmaturePosHost(void);
@@ -89,8 +95,10 @@ class Eprouvette : public Object2D
  protected :          
            Label* _l;
 
-           class AgentIA* _hostAgtIA = NULL;
-           vector<int> _typeAcHost;
+          class AgentIA* _hostAgtIA = NULL;
+          vector<int> _typeAcHost;
+          int _typeAgHost;
+
            vector<tuple<double, double>> _agPosHost;
            vector<tuple<double, double>> _acImmaturePosHost;
            vector<tuple<double, double>> _acMaturePosHost;

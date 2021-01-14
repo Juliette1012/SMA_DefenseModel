@@ -6,6 +6,7 @@
 #include "AgentCMA.h"
 #include "AgentLMA.h"
 #include "AgentIA.h"
+#include "Decor.h"
 #include "Environnement.h"
 #include "Label.h"
 #include "Ag.h"
@@ -42,6 +43,8 @@ void help(void)
   cout << "help" << endl;
   cout << "----" << endl;
   cout << "Actions clavier AVEC objet selectionne:" << endl;
+  cout << "- r sur CMA : risk status global" << endl;
+  cout << "- h sur eprouvette : help de l'eprouvette" << endl;
   cout << "- n : obtenir le nom d'un Agent2D" << endl;
   cout << "- p : obtenir le nom de l'environnement d'un Agent2D" << endl;
   cout << "- v : visualiser la défense (éprouvette) de l'agent2D" << endl;
@@ -120,7 +123,12 @@ int main(void)
   // faire un type d'attaque random et nbre d'Ag qui attaque
   // Il(s) attaquent sur un AgentIA random également
   //AgentIA* agentIAInfecte = (AgentIA*) allAgtIA.at(0);
-  agentIAInfecte->setNbAg(1); // type, AgentIA
+
+  //agentIAInfecte->setNbAg(1); // type, AgentIA
+  vector<tuple<int,int>> infection;
+  tuple<int,int> virus = make_tuple(0, 1); // type 0 corresponding to "DoS"
+  infection.push_back(virus);
+  agentIAInfecte->infect(infection);
 
   /*----- initialize specific data -----*/
 
@@ -209,8 +217,20 @@ void graphic_keyPressCallback(Agent2D *agt2d,
     cout << agt2d->getName() << endl;
     return;
   }
+  if ( // (Object2D*)agt2d==data->atelier ||
+      isInDecor((Object2D*)agt2d)
+    )                                  // Interaction avec les Object2D du decor
+  {
+  Object2D* obj2d=(Object2D*)agt2d;
 
-  agt2d->onKeyPress(key);
+  obj2d->onKeyPress(key);
+
+  return;
+  }
+
+
+  agt2d->onKeyPress(key); // Par defaut : si p affiche le nom de l'Agent2D
+
 }
 
 void graphic_mouseDragCallback(Agent2D *agt2d,

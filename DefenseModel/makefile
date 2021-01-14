@@ -34,7 +34,11 @@ FILESprg=prg.cpp \
 	AgentIA.cpp \
 	Label.cpp \
 	MessageColor.cpp \
-	ImAgent.cpp 
+	ImAgent.cpp \
+	MessageAgentCMA.cpp \
+	MessageAgentLMA.cpp \
+	MessageAgentIA.cpp \
+	MessageVaccin.cpp
 
 
 

@@ -49,10 +49,14 @@ void Eprouvette::onKeyPress(const char * key)
     if (strcmp(key,"H")==0 || strcmp(key,"h")==0) event_H();
     else
     if (strcmp(key,"S")==0 || strcmp(key,"s")==0) event_S();
-    //else
-    //if (strcmp(key,"C")==0 || strcmp(key,"c")==0) event_C();
-    //else
-    //if (strcmp(key,"G")==0 || strcmp(key,"g")==0) event_G();
+    else
+    if (strcmp(key,"C")==0 || strcmp(key,"c")==0) event_C();
+    else
+    if (strcmp(key,"0")==0) event_0();
+    else
+    if (strcmp(key,"1")==0) event_1();
+    else
+    if (strcmp(key,"2")==0) event_2();
 }
 
 void Eprouvette::setHostAgtIA(AgentIA* agtIA)
@@ -61,6 +65,7 @@ void Eprouvette::setHostAgtIA(AgentIA* agtIA)
     cout << "host changed : " << agtIA->getName() << endl;
 }
 
+// Type Ac 
 vector<int> Eprouvette::getTypeAcHost(void){
     return _typeAcHost;
 }
@@ -71,6 +76,19 @@ void Eprouvette::setTypeAcHost(int type){
 
 void Eprouvette::clearTypeAcHost(void){
     _typeAcHost.clear();
+}
+
+// Type Ag
+int Eprouvette::getTypeAgHost(void){
+    return _typeAgHost;
+}
+
+void Eprouvette::setTypeAgHost(int type){
+    _typeAgHost = type;
+}
+
+void Eprouvette::clearTypeAgHost(void){
+    _typeAgHost = NULL;
 }
 
 // Ac Immature
@@ -176,9 +194,9 @@ void Eprouvette::vizualisation(const char* name, Environnement *env, AgentIA* ag
             };
         }
 
-        cout << "NbAcImmature : " << nbAcImmature << endl;
-        cout << "NbAcMature : " << nbAcMature << endl;
-        cout << "NbAcMemoire : " << nbAcMemoire << endl;
+        // cout << "NbAcImmature : " << nbAcImmature << endl;
+        // cout << "NbAcMature : " << nbAcMature << endl;
+        // cout << "NbAcMemoire : " << nbAcMemoire << endl;
         nbAg = (int) allAg.size();
 
         
@@ -206,11 +224,18 @@ void Eprouvette::vizualisation(const char* name, Environnement *env, AgentIA* ag
 
     // update l'host
     this->setHostAgtIA(agtIA);
+
+    // clear vector type AgHost
+    this->clearTypeAgHost();
     // clear vector type AcHost
     this->clearTypeAcHost();
-    // clear ancienne  positions des Ag et Ac
+
+    // clear anciennes  positions des Ag et Ac
     this->clearAgPosHost();
     this->clearAcPosHost();
+
+    // update types des Ag
+    this->setTypeAgHost(_hostAgtIA->getTypeAg());
 
     // update positions des Ag si ils existaient avant
     this->setAgPosHost(_hostAgtIA->getAgPos());
@@ -253,13 +278,9 @@ void Eprouvette::vizualisation(const char* name, Environnement *env, AgentIA* ag
         }
     }
     if ((int)_hostAgtIA->getNbAcMemoire() !=0) {
-        cout << " " << (int)_hostAgtIA->getNbAcMemoire() << endl;
         for (int i=0; i < _hostAgtIA->getNbAcMemoire(); i++){
             if ((int)this->getAcMemoirePosHost().size() != 0){
                 // utilisation constructeur Ac avec sa position
-                double x = get<0>(this->getAcMemoirePosHost().at(i));
-                double y = get<1>(this->getAcMemoirePosHost().at(i));
-                cout << "x : " << x << "y : " << y << endl;
                 Ac* acMemoire = new Ac(this->getAcMemoirePosHost().at(i) ,2);
                 acMemoire->displayAc();
                 this->setTypeAcHost(2);
@@ -274,13 +295,13 @@ void Eprouvette::vizualisation(const char* name, Environnement *env, AgentIA* ag
     if ((int)_hostAgtIA->getNbAg() !=0) {
         for (int i=0; i < _hostAgtIA->getNbAg(); i++){
             if ((int)this->getAgPosHost().size() != 0){
-                // utilisation constructeur Ag avec sa position
-                Ag* ag = new Ag(this->getAgPosHost().at(i));
+                // utilisation constructeur Ag avec sa position et le type
+                Ag* ag = new Ag(this->getTypeAgHost() ,this->getAgPosHost().at(i));
                 ag->displayAg();
             }
             else {
                 // Première création de cette Ag donc pas de position pré-enregistré
-                Ag* ag = new Ag();
+                Ag* ag = new Ag(this->getTypeAgHost());
                 ag->displayAg();
             } 
         }
@@ -325,18 +346,31 @@ void Eprouvette::event_S(void)
     }
 }
 
-/*
+
 void Eprouvette::event_C(void)
 {
- Ac * agt = new Ac;
+ Ac * agt = new Ac(0);
  cout << "Creation de " << agt->getName() << endl;
+ agt->displayAc();
 }
 
-void Eprouvette::event_G(void)
-{
- Ag * agt = new Ag;
- cout << "Creation de " << agt->getName() << endl;
-}*/
+void  Eprouvette::event_0(void){
+     Ag * agt = new Ag(0);
+    cout << "Creation de " << agt->getName() << " de type DoS " << endl;
+    agt->displayAg();
+}
+
+void  Eprouvette::event_1(void){
+     Ag * agt = new Ag(1);
+    cout << "Creation de " << agt->getName() << " de type brute-force " << endl;
+    agt->displayAg();
+}
+
+void  Eprouvette::event_2(void){
+    Ag * agt = new Ag(2);
+    cout << "Creation de " << agt->getName() << " de type R2L " << endl;
+    agt->displayAg();
+}
 
 //--
 bool operator==(const Eprouvette& anE1, const Eprouvette& anE2)

@@ -27,7 +27,8 @@ class AgentCMA : public Agent2D
    virtual  void onKeyPress(const char * key);
 
    virtual  void live(double dt);
-
+   void event_R(void);
+  int getRiskStatus(void);
    // Comparaisons
 
    friend  bool operator==(const AgentCMA& anI1, const AgentCMA& anI2);
@@ -44,6 +45,11 @@ class AgentCMA : public Agent2D
  protected :
 
              double _squareSize;
+            vector<int> _riskStatusAgentsLMA;
+            vector<string> _nameAgentsLMA;
+
+            int _riskStatusGlobalCMA;
+
 
  private :
 

@@ -21,8 +21,8 @@ class Ag : public ImAgent
    // Allocateurs/Desallocateurs
 
             Ag();
-            Ag(tuple<double, double> position);
-            Ag(string type);
+            Ag(int type, tuple<double, double> position);
+            Ag(int type);
             Ag(const Ag& anA);
             Ag& operator=(const Ag& anA);
    virtual ~Ag(void);
@@ -54,7 +54,7 @@ class Ag : public ImAgent
            bool isEqualTo(const Ag& anA) const;
 
  protected :
-            string _type;
+            int _type;
              // ###
 
  private :

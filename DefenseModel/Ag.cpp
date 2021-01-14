@@ -7,16 +7,17 @@ Ag::Ag() : ImAgent()
     newAgent();
 }
 
-Ag::Ag(tuple<double, double> position) : ImAgent()
+Ag::Ag(int type, tuple<double, double> position) : ImAgent()
 {
     newAgent();
     double x = get<0>(position);
     double y = get<1>(position);
     this->setX(x);
     this->setY(y);
+    _type = type;
 }
 
-Ag::Ag(string type) : ImAgent()
+Ag::Ag(int type) : ImAgent()
 {
     newAgent();
     _type = type;

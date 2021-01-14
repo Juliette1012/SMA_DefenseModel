@@ -1,5 +1,5 @@
 #include "AgentCMA.h"
-
+#include "MessageAgentLMA.h"
 #include <math.h>
 
 //--
@@ -43,6 +43,8 @@ void AgentCMA::onKeyPress(const char * key)
 {
  if (strcmp(key,"d")==0 || strcmp(key,"D")==0) delete this;
  else
+ if (strcmp(key,"r")==0 || strcmp(key,"R")==0) event_R();
+ else
  Agent2D::onKeyPress(key);
 }
 
@@ -52,6 +54,58 @@ void AgentCMA::live(double dt)
  (void)dt; // Pour eviter un warning si pas utilise
 
  // "Comportement" d'un Agent de la classe AgentCMA
+    string agentName = getName();
+    string className = getClass();
+    string prefixe   = "["+agentName+"]";
+    (void)dt; // Pour eviter un warning si pas utilise
+
+    // "Comportement" d'un Agent de la classe AgentLMA
+    while (getNbMessages()){
+        MessageAgentLMA* message = (MessageAgentLMA*)getNextMessage();
+        Agent* emitter = message->getEmitter();
+        string emitterName = emitter->getName();
+
+        // cout << prefixe << " I receive a message from : " << emitterName
+        //         << " with value : " << message->getInt() << endl;
+
+        if ((int)_riskStatusAgentsLMA.size() < 3){
+            _riskStatusAgentsLMA.push_back(message->getInt());
+            _nameAgentsLMA.push_back(emitterName);
+        }
+
+        else {
+            if (_nameAgentsLMA.at(0) == emitterName and (message->getInt() != _riskStatusAgentsLMA.at(0))){
+                _riskStatusAgentsLMA.at(0) = message->getInt();
+            }
+            if (_nameAgentsLMA.at(1) == emitterName and (message->getInt() != _riskStatusAgentsLMA.at(1))){
+                _riskStatusAgentsLMA.at(1) = message->getInt();
+            }
+
+            if (_nameAgentsLMA.at(2) == emitterName and (message->getInt() != _riskStatusAgentsLMA.at(2))){
+                    _riskStatusAgentsLMA.at(2) = message->getInt();
+            }
+        }
+
+        int compteur = 0;
+        for (auto& risk : _riskStatusAgentsLMA){
+            compteur += risk;
+        }
+
+        if (_riskStatusGlobalCMA != compteur ){
+            _riskStatusGlobalCMA = compteur;
+            cout << "risk global : " << _riskStatusGlobalCMA << endl;
+        }
+
+
+        delete message;
+    }
+}
+
+void AgentCMA::event_R(void){
+    cout << "Le risk status global est : " << this->getRiskStatus() << endl;
+}
+int AgentCMA::getRiskStatus(void){
+    return _riskStatusGlobalCMA;
 }
 
 //--

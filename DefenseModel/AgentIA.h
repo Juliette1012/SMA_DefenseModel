@@ -36,9 +36,13 @@ class AgentIA : public Agent2D
    Environnement* getEnv(void);
    Eprouvette* getEprouvette(void);
 
-   //vector<Ag*> getAg(void);
-   //vector<Ac*> getAc(void);
+   int getRiskStatus(void);
+   void setRiskStatus(int risk);
+
    vector<int> getTypeAc(void);
+   int getTypeAg(void);
+   void setTypeAg(int type);
+   void infect(vector<tuple<int, int>> virus);
 
    int getNbAcImmature(void);
    int getNbAcMature(void);
@@ -84,12 +88,14 @@ class AgentIA : public Agent2D
             class Eprouvette* _eprouvette;
             const char* _name;
 
+            int _riskStatus;
             int _nbAcImmature;
             int _nbAcMature;
             int _nbAcMemoire;
             int _nbAg;
 
             vector<int> _typeAc;
+            int _typeAg;
             vector<tuple<double, double>> _agPos;
 
             vector<tuple<double, double>> _acImmaturePos;

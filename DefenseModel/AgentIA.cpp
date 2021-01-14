@@ -1,6 +1,8 @@
 #include "AgentIA.h"
 #include "Eprouvette.h"
+#include "MessageAgentIA.h"
 #include <math.h>
+#include "AgentLMA.h"
 #include "Ag.h"
 #include "Ac.h"
 
@@ -88,6 +90,25 @@ void AgentIA::live(double dt)
     (void)dt; // Pour eviter un warning si pas utilise
 
     // "Comportement" d'un Agent de la classe AgentIA
+    // l'agentIA envoi un message à l'agentLMA de son 
+    // secteur lui informant du risk status
+
+    //vector<Agent*> allAgBroadcast;
+    //getAllAgents("Ag", allAgBroadcast);
+
+    if(this->getNbAg() >= 1) this->setRiskStatus(1);
+    else if (this->getNbAg() == 0) this->setRiskStatus(0);
+
+    MessageAgentIA m(this->getRiskStatus());
+    vector<Agent*> allAgentLMA;
+    getAllAgents("AgentLMA", allAgentLMA);
+
+    for (Agent* agentLMA: allAgentLMA){
+        AgentLMA* newAgentLMA = (AgentLMA*) agentLMA;
+        if (this->getEnv() == newAgentLMA->getEnv()){
+            sendMessageTo(m,newAgentLMA);
+        }
+    }
 }
 
 Environnement *AgentIA::getEnv(void)
@@ -108,8 +129,49 @@ void AgentIA::setPosition(int x, int y)
     setLocation(_x, _y, 0);
 }
 
+// Risk Status
+int AgentIA::getRiskStatus(void){
+    return _riskStatus;
+}
+
+void AgentIA::setRiskStatus(int risk){
+    _riskStatus = risk;
+}
+
+// Type Ac
 vector<int> AgentIA::getTypeAc(void){
     return _typeAc;
+}
+
+// Type Ag
+int AgentIA::getTypeAg(void){
+    return _typeAg;
+}
+
+void AgentIA::setTypeAg(int type){
+    _typeAg = type;
+}
+
+void AgentIA::infect(vector<tuple<int, int>> virus){
+    for (auto& attack : virus){
+        int type = get<0>(attack);
+        int nb = get<1>(attack);
+        this->setNbAg(nb);
+        this->setTypeAg(type);
+        
+    }
+    switch(this->getTypeAg()){
+        case 0 : 
+            cout << "Un virus de type DoS a ete détecté dans l'agent : " << this->getName() << endl;
+            break;
+        case 1 : 
+            cout << "Un virus de type Brute Force a été detecté dans l'agent : " << this->getName() << endl;
+            break;
+        default :
+            cout << "Un virus de type Inconnu a été detecté dans l'agent : " << this->getName() << endl;
+            break;
+    }
+
 }
 
 int AgentIA::getNbAcImmature(void){
