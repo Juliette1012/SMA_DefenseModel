@@ -36,8 +36,9 @@ class AgentIA : public Agent2D
    Environnement* getEnv(void);
    Eprouvette* getEprouvette(void);
 
-   vector<Ag*> getAg(void);
-   vector<Ac*> getAc(void);
+   //vector<Ag*> getAg(void);
+   //vector<Ac*> getAc(void);
+   vector<int> getTypeAc(void);
 
    int getNbAcImmature(void);
    int getNbAcMature(void);
@@ -48,10 +49,19 @@ class AgentIA : public Agent2D
    void setNbAcMature(int nbAcMature);
    void setNbAcMemoire(int nbAcMemoire);
 
-   void setPosition(int x, int y);
+   vector<tuple<double, double>> getAgPos(void);
+   void setAgPos(vector<tuple<double, double>> positions);
 
-   void setAg(Ag* ag);
-   void setAc(Ac* ac);
+   vector<tuple<double, double>> getAcImmaturePos(void);
+   void setAcImmaturePos(vector<tuple<double, double>> positions);
+
+   vector<tuple<double, double>> getAcMaturePos(void);
+   void setAcMaturePos(vector<tuple<double, double>> positions);
+
+   vector<tuple<double, double>> getAcMemoirePos(void);
+   void setAcMemoirePos(vector<tuple<double, double>> positions);
+
+   void setPosition(int x, int y);
 
    // Comparaisons
 
@@ -77,15 +87,16 @@ class AgentIA : public Agent2D
             int _nbAcImmature;
             int _nbAcMature;
             int _nbAcMemoire;
-            int _nbAg = 5;
-            
-            vector<Ag*> _Ag; 
-            vector<Ac*> _Ac;
+            int _nbAg;
+
+            vector<int> _typeAc;
+            vector<tuple<double, double>> _agPos;
+
+            vector<tuple<double, double>> _acImmaturePos;
+            vector<tuple<double, double>> _acMaturePos;
+            vector<tuple<double, double>> _acMemoirePos;
 
  private :
-
-
-
 
  private :
 

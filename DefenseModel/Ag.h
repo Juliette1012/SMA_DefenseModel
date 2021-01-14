@@ -6,10 +6,8 @@
 #include "MAS.h"
 
 #include "ImAgent.h"
-#include "AgentIA.h"
 
 
-class AgentIA;
 using namespace std;
 
 class Ag : public ImAgent
@@ -22,8 +20,9 @@ class Ag : public ImAgent
 
    // Allocateurs/Desallocateurs
 
-            Ag(AgentIA* host);
-            Ag(string type, AgentIA* host);
+            Ag();
+            Ag(tuple<double, double> position);
+            Ag(string type);
             Ag(const Ag& anA);
             Ag& operator=(const Ag& anA);
    virtual ~Ag(void);
@@ -56,7 +55,6 @@ class Ag : public ImAgent
 
  protected :
             string _type;
-            class AgentIA* _host;
              // ###
 
  private :

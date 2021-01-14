@@ -1,7 +1,7 @@
 #include "Eprouvette.h"
 
 #include <vector>
-
+#include <tuple>
 #include "Decor.h"
 
 //--
@@ -61,90 +61,230 @@ void Eprouvette::setHostAgtIA(AgentIA* agtIA)
     cout << "host changed : " << agtIA->getName() << endl;
 }
 
+vector<int> Eprouvette::getTypeAcHost(void){
+    return _typeAcHost;
+}
+
+void Eprouvette::setTypeAcHost(int type){
+    _typeAcHost.push_back(type);
+}
+
+void Eprouvette::clearTypeAcHost(void){
+    _typeAcHost.clear();
+}
+
+// Ac Immature
+void Eprouvette::saveAcImmaturePosHost(double x, double y){
+    _acImmaturePosHost.push_back(make_tuple(x, y));
+}
+
+void Eprouvette::setAcImmaturePosHost(vector<tuple<double,double>> positions){
+    _acImmaturePosHost = positions;
+}
+
+vector<tuple<double,double>> Eprouvette::getAcImmaturePosHost(void){
+    return _acImmaturePosHost;
+}
+
+// Ac Mature
+void Eprouvette::saveAcMaturePosHost(double x, double y){
+    _acMaturePosHost.push_back(make_tuple(x, y));
+}
+
+void Eprouvette::setAcMaturePosHost(vector<tuple<double,double>> positions){
+    _acMaturePosHost = positions;
+}
+
+vector<tuple<double,double>> Eprouvette::getAcMaturePosHost(void){
+    return _acMaturePosHost;
+}
+
+// Ac Memoire
+void Eprouvette::saveAcMemoirePosHost(double x, double y){
+    _acMemoirePosHost.push_back(make_tuple(x, y));
+}
+
+void Eprouvette::setAcMemoirePosHost(vector<tuple<double,double>> positions){
+    _acMemoirePosHost = positions;
+}
+
+vector<tuple<double,double>> Eprouvette::getAcMemoirePosHost(void){
+    return _acMemoirePosHost;
+}
+
+// Clear all vector<tuple<int,int> of Ac : Immature, Mature, Memoire
+void Eprouvette::clearAcPosHost(void){
+    _acImmaturePosHost.clear();
+    _acMaturePosHost.clear();
+    _acMemoirePosHost.clear();
+}
+
+// Ag
+void Eprouvette::saveAgPosHost(double x, double y){
+    _agPosHost.push_back(make_tuple(x, y));
+}
+
+void Eprouvette::setAgPosHost(vector<tuple<double,double>> positions){
+    _agPosHost = positions;
+}
+
+vector<tuple<double,double>> Eprouvette::getAgPosHost(void){
+    return _agPosHost;
+}
+
+// Clear vector<tuple<int,int>> Ag
+void Eprouvette::clearAgPosHost(void){
+    _agPosHost.clear();
+}
+
 void Eprouvette::vizualisation(const char* name, Environnement *env, AgentIA* agtIA)
 {
     _l->setText(name, env);
 
-    //if (_hostAgtIA != NULL and _hostAgtIA->getAc().size() != 0){
+    vector<Agent*> allAc;
+    vector<Agent*> allAg;
+
     if (_hostAgtIA != NULL){
+        getAllAgents("Ac", allAc);
+        getAllAgents("Ag", allAg);
+
         //Avant de changer d'éprouvette, il faut sauvegarder l'état courant de l'agentIA
         //remise à 0 des compteurs
         int nbAcImmature = 0;
         int nbAcMature = 0;
         int nbAcMemoire = 0;
         int nbAg = 0;
-
-        for (auto& ac : _hostAgtIA->getAc()){
-            switch (ac->getType()){
+        
+        for (Agent* ac : allAc){
+            Ac* newAc = (Ac *) ac;
+            switch(newAc->getType()){
                 case 0:
                     nbAcImmature++;
+                    saveAcImmaturePosHost(newAc->getX(), newAc->getY());
                     break;
                 case 1:
                     nbAcMature++;
+                    saveAcMaturePosHost(newAc->getX(), newAc->getY());
                     break;
                 case 2:
                     nbAcMemoire++;
+                    saveAcMemoirePosHost(newAc->getX(), newAc->getY());
                     break;
                 default:
-                    cout << "Error Ac " << ac << " of wrong type " << ac->getType() << endl;
+                    cout << "Error of wrong type " << endl;
                     break;
-            }
+            };
         }
-        nbAg = _hostAgtIA->getAg().size();
+
+        cout << "NbAcImmature : " << nbAcImmature << endl;
+        cout << "NbAcMature : " << nbAcMature << endl;
+        cout << "NbAcMemoire : " << nbAcMemoire << endl;
+        nbAg = (int) allAg.size();
+
         
+        for (Agent* ag : allAg){
+            Ag* newAg = (Ag*) ag;
+            saveAgPosHost(newAg->getX(), newAg->getY());
+        }
+
         _hostAgtIA->setNbAcImmature(nbAcImmature);
         _hostAgtIA->setNbAcMature(nbAcMature);
         _hostAgtIA->setNbAcMemoire(nbAcMemoire);
-        cout << "nb Ag : " << nbAg << endl;
         _hostAgtIA->setNbAg(nbAg);
 
-        cout << "\nLast host : " << endl;
-        cout << "nbAcImmature : " << nbAcImmature << endl;
-        cout << "nbAcMature : " << nbAcMature << endl;
-        cout << "nbAcMemoire : " << nbAcMemoire << endl;
-        cout << "nbAg : " << nbAg << endl;
+        _hostAgtIA->setAgPos(this->getAgPosHost());
+        _hostAgtIA->setAcImmaturePos(this->getAcImmaturePosHost());
+        _hostAgtIA->setAcMaturePos(this->getAcMaturePosHost());
+        _hostAgtIA->setAcMemoirePos(this->getAcMemoirePosHost());
     }
 
-    vector<Agent*> allAc;
-    vector<Agent*> allAg;
-    getAllAgents("Ac", allAc);
-    getAllAgents("Ag", allAg);
+    // delete all Ac et Ag
+
     for (auto& ac : allAc) delete ac;
-    for (auto& ag : allAg) delete ag;
+    for (auto& ag : allAg) delete ag; 
 
+
+    // update l'host
     this->setHostAgtIA(agtIA);
-    // regarder le nombre d'ag depuis AgentIA
-    // Créer le nombre correspondant d'ag
+    // clear vector type AcHost
+    this->clearTypeAcHost();
+    // clear ancienne  positions des Ag et Ac
+    this->clearAgPosHost();
+    this->clearAcPosHost();
 
+    // update positions des Ag si ils existaient avant
+    this->setAgPosHost(_hostAgtIA->getAgPos());
+
+    // update positions des Ac si ils existaient avant
+    this->setAcImmaturePosHost(_hostAgtIA->getAcImmaturePos());
+    this->setAcMaturePosHost(_hostAgtIA->getAcMaturePos());
+    this->setAcMemoirePosHost(_hostAgtIA->getAcMemoirePos());
+
+    // Depuis le nouveau host AgentIA
+    // Créer le nombre correspondant d'ac et d'ag 
     if ((int)_hostAgtIA->getNbAcImmature() !=0) {
         for (int i=0; i < _hostAgtIA->getNbAcImmature(); i++){
-            _hostAgtIA->setAc(new Ac(_hostAgtIA, 0));}
+            if ((int)this->getAcImmaturePosHost().size() != 0){
+                // utilisation constructeur Ac avec sa position
+                Ac* acImmature = new Ac(this->getAcImmaturePosHost().at(i), 0);
+                acImmature->displayAc();
+                this->setTypeAcHost(0);
+        }
+        else {
+            Ac* acImmature = new Ac(0);
+            acImmature->displayAc();
+            this->setTypeAcHost(0);
+        }
+        }
     }
     if ((int)_hostAgtIA->getNbAcMature() !=0) {
         for (int i=0; i < _hostAgtIA->getNbAcMature(); i++){
-            _hostAgtIA->setAc(new Ac(_hostAgtIA, 1));}
+            if ((int)this->getAcMaturePosHost().size() != 0){
+                // utilisation constructeur Ac avec sa position
+                Ac* acMature = new Ac(this->getAcMaturePosHost().at(i), 1);
+                acMature->displayAc();
+                this->setTypeAcHost(1);
+        }
+        else {
+            Ac* acMature = new Ac(1);
+            acMature->displayAc();
+            this->setTypeAcHost(1);
+        }
+        }
     }
     if ((int)_hostAgtIA->getNbAcMemoire() !=0) {
+        cout << " " << (int)_hostAgtIA->getNbAcMemoire() << endl;
         for (int i=0; i < _hostAgtIA->getNbAcMemoire(); i++){
-            _hostAgtIA->setAc(new Ac(_hostAgtIA, 2));}
+            if ((int)this->getAcMemoirePosHost().size() != 0){
+                // utilisation constructeur Ac avec sa position
+                double x = get<0>(this->getAcMemoirePosHost().at(i));
+                double y = get<1>(this->getAcMemoirePosHost().at(i));
+                cout << "x : " << x << "y : " << y << endl;
+                Ac* acMemoire = new Ac(this->getAcMemoirePosHost().at(i) ,2);
+                acMemoire->displayAc();
+                this->setTypeAcHost(2);
+            }
+        else {
+            Ac* acMemoire = new Ac(2);
+            acMemoire->displayAc();
+            this->setTypeAcHost(2);
+        }
+        }
     }
     if ((int)_hostAgtIA->getNbAg() !=0) {
         for (int i=0; i < _hostAgtIA->getNbAg(); i++){
-            _hostAgtIA->setAg(new Ag(_hostAgtIA));}
+            if ((int)this->getAgPosHost().size() != 0){
+                // utilisation constructeur Ag avec sa position
+                Ag* ag = new Ag(this->getAgPosHost().at(i));
+                ag->displayAg();
+            }
+            else {
+                // Première création de cette Ag donc pas de position pré-enregistré
+                Ag* ag = new Ag();
+                ag->displayAg();
+            } 
+        }
     }
-    cout << "size of _hostAgtIA->getAcImmature().size() : " << _hostAgtIA->getAc().size() << endl;
-    cout << "size of _hostAgtIA->getNbAcImmature() : " << _hostAgtIA->getNbAcImmature() << endl;
-    cout << "size of _hostAgtIA->getAg().size() : " << _hostAgtIA->getAg().size() << endl;
-    cout << "size of _hostAgtIA->getNbAg() : " << _hostAgtIA->getNbAg() << endl;
-
-    for (auto& ag : _hostAgtIA->getAg()) {
-        cout << "Try to display";
-        ag->displayAg();
-    }
-    for (auto& ac : _hostAgtIA->getAc()) ac->displayAc();
-
-    cout << "Nombre Ag : " << _hostAgtIA->getAg().size() << endl;
-    cout << "Nombre Ac : " << _hostAgtIA->getAc().size() << endl;
 }
 
 void Eprouvette::event_H(void)

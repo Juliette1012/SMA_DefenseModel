@@ -121,8 +121,6 @@ int main(void)
   // Il(s) attaquent sur un AgentIA random également
   //AgentIA* agentIAInfecte = (AgentIA*) allAgtIA.at(0);
   agentIAInfecte->setNbAg(1); // type, AgentIA
-  cout << "Agent IA infecté nbAg : " << agentIAInfecte->getNbAg() << endl;
-  cout << "Agent IA infecté : " <<agentIAInfecte->getName() << endl;
 
   /*----- initialize specific data -----*/
 

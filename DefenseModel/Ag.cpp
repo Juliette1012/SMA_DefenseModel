@@ -2,17 +2,24 @@
 #include "Eprouvette.h"
 
 //--
-Ag::Ag(AgentIA* host) : ImAgent()
+Ag::Ag() : ImAgent()
 {
     newAgent();
-    _host = host;
 }
 
-Ag::Ag(string type, AgentIA* host) : ImAgent()
+Ag::Ag(tuple<double, double> position) : ImAgent()
+{
+    newAgent();
+    double x = get<0>(position);
+    double y = get<1>(position);
+    this->setX(x);
+    this->setY(y);
+}
+
+Ag::Ag(string type) : ImAgent()
 {
     newAgent();
     _type = type;
-    _host = host;
 }
 
 //--
@@ -61,7 +68,6 @@ void Ag::event_H(void)
 
 void Ag::displayAg()
 { 
-    cout << "Display Ag";
     extern Eprouvette* eprouvette;
     this->setColor("red");  
     square(0.7,1);

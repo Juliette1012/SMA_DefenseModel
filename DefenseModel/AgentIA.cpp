@@ -77,7 +77,6 @@ void AgentIA::onKeyPress(const char *key)
     {
         const char *name = getName().c_str();
         getEprouvette()->vizualisation(name, getEnv(), this);
-
     }
     else
         Agent2D::onKeyPress(key);
@@ -109,31 +108,8 @@ void AgentIA::setPosition(int x, int y)
     setLocation(_x, _y, 0);
 }
 
-void AgentIA::setAg(Ag *ag)
-{
-    if (ag != NULL){
-        _Ag.push_back(ag);
-        cout << "\nAdd an Ag: "<< ag << " to " << getName() << endl;
-    } 
-}
-
-void AgentIA::setAc(Ac *ac)
-{
-    if (ac != NULL){
-        _Ac.push_back(ac);
-        //cout << "\nAdd an Ac: " << ac << " to " << getName() << endl;
-    }
-}
-
-
-vector<Ag *> AgentIA::getAg(void)
-{
-    return _Ag;
-}
-
-vector<Ac *> AgentIA::getAc(void)
-{
-    return _Ac;
+vector<int> AgentIA::getTypeAc(void){
+    return _typeAc;
 }
 
 int AgentIA::getNbAcImmature(void){
@@ -153,7 +129,6 @@ int AgentIA::getNbAg(void){
 }
 
 void AgentIA::setNbAg(int nbAg){
-    cout << "Set with the number : " << nbAg << endl;
     _nbAg = nbAg;
     cout << "setNbAg of " << this->getName() << " : " << _nbAg << "\n\n";
 }
@@ -169,6 +144,41 @@ void AgentIA::setNbAcMature(int nbAcMature){
 
 void AgentIA::setNbAcMemoire(int nbAcMemoire){
     _nbAcMemoire = nbAcMemoire;
+}
+
+vector<tuple<double, double>> AgentIA::getAgPos(){
+    return _agPos;
+}
+
+void AgentIA::setAgPos(vector<tuple<double, double>> positions){
+    _agPos = positions;
+}
+
+// Ac Immature
+vector<tuple<double, double>> AgentIA::getAcImmaturePos(){
+    return _acImmaturePos;
+}
+
+void AgentIA::setAcImmaturePos(vector<tuple<double, double>> positions){
+    _acImmaturePos = positions;
+}
+
+// Ac Mature
+vector<tuple<double, double>> AgentIA::getAcMaturePos(){
+    return _acMaturePos;
+}
+
+void AgentIA::setAcMaturePos(vector<tuple<double, double>> positions){
+    _acMaturePos = positions;
+}
+
+// Ac Memoire
+vector<tuple<double, double>> AgentIA::getAcMemoirePos(){
+    return _acMemoirePos;
+}
+
+void AgentIA::setAcMemoirePos(vector<tuple<double, double>> positions){
+    _acMemoirePos = positions;
 }
 
 //--

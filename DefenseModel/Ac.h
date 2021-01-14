@@ -22,8 +22,9 @@ class Ac : public ImAgent
  public :
 
    // Allocateurs/Desallocateurs
-
-            Ac(AgentIA* host, int type);
+            
+            Ac(int type);
+            Ac(tuple<double, double> position, int type);
             Ac(const Ac& anA);
             Ac& operator=(const Ac& anA);
    virtual ~Ac(void);

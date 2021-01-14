@@ -2,7 +2,7 @@
 #define _EPROUVETTE_H_
 
 #include <iostream>
-
+#include <tuple>
 #include "Object2D.h"
 #include "ImAgent.h"
 #include "AgentIA.h"
@@ -40,6 +40,7 @@ class Eprouvette : public Object2D
 
             void vizualisation(const char* name, Environnement *env, AgentIA* agtIA);
 
+
    // Comparaisons
 
    friend  bool operator==(const Eprouvette& anE1, const Eprouvette& anE2);
@@ -49,8 +50,30 @@ class Eprouvette : public Object2D
 
            int  getSize(void) const;
            void setHostAgtIA(AgentIA* agtIA);
-           //void lastHostNoShape();
            void deleteLastHost();
+
+           vector<int> getTypeAcHost(void);
+           void setTypeAcHost(int type);
+           void clearTypeAcHost(void);
+
+          void saveAcImmaturePosHost(double x, double y);
+          vector<tuple<double, double>> getAcImmaturePosHost(void);
+          void setAcImmaturePosHost(vector<tuple<double,double>> positions);
+
+          void saveAcMaturePosHost(double x, double y);
+          vector<tuple<double, double>> getAcMaturePosHost(void);
+          void setAcMaturePosHost(vector<tuple<double,double>> positions);
+
+          void saveAcMemoirePosHost(double x, double y);
+          vector<tuple<double, double>> getAcMemoirePosHost(void);
+          void setAcMemoirePosHost(vector<tuple<double,double>> positions);
+
+          void clearAcPosHost(void);
+
+          void saveAgPosHost(double x, double y);
+          vector<tuple<double, double>> getAgPosHost(void);
+          void setAgPosHost(vector<tuple<double,double>> positions);
+          void clearAgPosHost(void);
 
  protected :
 
@@ -67,6 +90,11 @@ class Eprouvette : public Object2D
            Label* _l;
 
            class AgentIA* _hostAgtIA = NULL;
+           vector<int> _typeAcHost;
+           vector<tuple<double, double>> _agPosHost;
+           vector<tuple<double, double>> _acImmaturePosHost;
+           vector<tuple<double, double>> _acMaturePosHost;
+           vector<tuple<double, double>> _acMemoirePosHost;
 
  private :
 

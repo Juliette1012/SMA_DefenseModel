@@ -2,12 +2,23 @@
 
 #include "Decor.h"
 
-Ac::Ac(AgentIA* host, int type) : ImAgent()
+Ac::Ac(int type) : ImAgent()
 {
     newAgent();
-    _agentIA = host;
     _cercle = new Object2D();
     _type = type;
+    extern Eprouvette* eprouvette;
+}
+
+Ac::Ac(tuple<double, double> position, int type) : ImAgent()
+{
+    newAgent();
+    _cercle = new Object2D();
+    _type = type;
+    double x = get<0>(position);
+    double y = get<1>(position);
+    this->setX(x);
+    this->setY(y);
     extern Eprouvette* eprouvette;
 }
 
@@ -73,8 +84,8 @@ void Ac::displayAc()
         _cercle->setColor(this->getColor());
     }
 
-    stop();
-    //start();    
+    //stop();
+    start();    
 }
 
 
@@ -118,6 +129,7 @@ void Ac::live(double dt)
 {
  (void)dt; // Pour eviter un warning si pas utilise
 
+
  if (dt!=0.0 && _start) Kinematic(dt);
 
  // "Comportement" d'un Agent de la classe Ac
@@ -127,12 +139,10 @@ void Ac::live(double dt)
  firstAg = (Ag*)viewFirst("Ag",2*M_PI,0); 
  if (firstAg)
  {
-    //Si un agent Ag est detecte alors on devient mature et on attaque
-    for (Ac* ac : _agentIA->getAc()){
-        ac->setColor("yellow");
-        _cercle->setColor(this->getColor());
-        this->setType(1); // mature
-    }
+    this->setColor("yellow");
+    _cercle->setColor(this->getColor());
+    this->setType(1); // mature
+
     double xAg = firstAg->getX();
     double yAg = firstAg->getY();
     if (towards(xAg,yAg) <= _vision)
@@ -141,11 +151,10 @@ void Ac::live(double dt)
         this->setColor("orange");
         _cercle->setColor(this->getColor());
         this->setType(2); // memoire
-        //delete firstAg;
+        delete firstAg;
         setLinearVelocityX(0);
         //update the agent state
     }
-    //cout << _agentIA->getNbAcMature() << endl;
  }
  else setLinearVelocityX(0);
 
