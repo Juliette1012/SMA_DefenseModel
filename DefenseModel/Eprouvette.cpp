@@ -315,7 +315,9 @@ void Eprouvette::event_H(void)
     cout << "Touches disponibles sur une Eprouvette :" << endl;
     cout << "---------------------------------------" << endl;
     cout << "c/C : Creation Ac                      " << endl;
-    cout << "g/G : Creation Ag                      " << endl;
+    cout << "0 : Creation Ag de type Dos            " << endl;
+    cout << "1 : Creation Ag de type brute-force    " << endl;
+    cout << "2 : Creation Ag de type R2L            " << endl;
     cout << "s/S : start/stop de tous les Ac        " << endl;
     cout << "h/H : Help sur l'eprouvette !          " << endl;
     cout << "---------------------------------------" << endl;
